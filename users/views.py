@@ -1,5 +1,3 @@
-
-
 from django.shortcuts import render, redirect
 from users.models import User, UserProfile
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
@@ -93,7 +91,7 @@ def user_logout(request):
     logout(request)
     messages.success(request, "You are logged out!")
 
-    return redirect("HomeView")
+    return redirect("Success")
 
 @csrf_exempt
 def activate(request,uidb64,token):
@@ -109,7 +107,37 @@ def activate(request,uidb64,token):
         user_signup.save()
         login(request,user_signup)
 
-        return redirect("home")
+        return redirect("Success")
 
     else:
         return render(request,"activation_failed.html")        
+
+
+# CRUD operations
+
+class Profile(CreateView):
+    model = UserProfile
+    fields = "__all__"
+    success_url = "/users/Success/"
+
+class UpdateProfile(UpdateView):
+    model = UserProfile
+    fields = "__all__"
+    success_url = "/users/Success/"
+
+class DeleteProfile(DeleteView):
+    model = UserProfile
+    fields = "__all__"
+    success_url = "/users/Success/"
+
+class ListProfile(ListView):
+    model = UserProfile
+    success_urls = "/users/Success/"
+
+class DetailProfile(DetailView):
+    model = UserProfile
+    success_url = "/users/Success/"            
+
+class Success(TemplateView):
+    template_name = "users/success.html/"
+
