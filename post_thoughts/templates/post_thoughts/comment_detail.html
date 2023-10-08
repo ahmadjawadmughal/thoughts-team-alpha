@@ -1,0 +1,45 @@
+{% extends "post_thoughts/base.html" %} {% block content %}
+<h2>Thought Template</h2>
+<button
+  type="button"
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#example-modal"
+>
+  Signup
+</button>
+<div
+  class="modal"
+  id="example-modal"
+  tabindex="-1"
+  aria-labelledby="example-modal-label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="example-modal-label">Signup</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h2>Details of Comment</h2>
+        <ul style="list-style-type: number; font-size: x-large">
+            <li>User: {{ object.text }}</br> Username: {{ object.user }}</li>
+          </ul>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "post_thoughts/base.html" %} {% block content %}
+<h2>Home Template</h2>
+<button
+  type="button"
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#example-modal"
+>
+  Signup
+</button>
+<div
+  class="modal"
+  id="example-modal"
+  tabindex="-1"
+  aria-labelledby="example-modal-label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="example-modal-label">Signup</h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        {% for object in object_list %}
+        <h5>{{ object }}</h5>
+        {% endfor %}
+
+        <br /><br />
+        <input type="submit" value="submit" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
