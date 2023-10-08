@@ -1,0 +1,5 @@
+/users/templates
+/post_thoughts/templates
+__init__
+db.sqlite3
+/env
