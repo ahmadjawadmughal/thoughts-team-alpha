@@ -7,27 +7,27 @@ from post_thoughts.models import *
 class CreateThoughts(CreateView):
     model = Thought
     fields = "__all__"
-    success_url = "/post_thoughts/Success/"
+    success_url = "/thoughts/Success/"
 
 class UpdateThought(UpdateView):
     model = Thought
     fields = "__all__"
-    success_url = "/post_thoughts/Success/"
+    success_url = "/thoughts/Success/"
 
 class DeleteThoughts(DeleteView):
     model = Thought
     fields = "__all__"
-    success_url = "/post_thoughts/Success/"
+    success_url = "/thoughts/Success/"
 
 class ListThoughts(ListView):
     model = Thought
 
-    success_url = "/post_thoughts/Success/"
+    success_url = "/thoughts/Success/"
 
 class DetailThoughts(DetailView):
     model = Thought
 
-    success_url = "/post_thoughts/Success/"        
+    success_url = "/thoughts/Success/"        
 
 class Success(TemplateView):
     template_name = "post_thoughts/success.html/"
