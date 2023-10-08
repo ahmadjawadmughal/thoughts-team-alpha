@@ -1,0 +1,9 @@
+<html>
+  <!--for ListView-->
+  <ul style="list-style-type:number;font-size:x-large">
+    {% for i in object_list %}
+    <li>Bio:{{ i.bio }}</li></br>
+    <li>City:{{ i.city }}</li></br>
+    {% endfor %}
+  </ul>
+</html>
