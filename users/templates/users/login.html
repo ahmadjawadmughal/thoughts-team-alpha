@@ -3,7 +3,7 @@
 <main>
   <div class="login-container">
     <h2>Login</h2>
-    <form action="login.php" method="POST">
+    <form action="{% url "login" %}" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required />
