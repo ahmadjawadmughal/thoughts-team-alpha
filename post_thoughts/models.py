@@ -5,7 +5,8 @@ from users.models import User
 class Thought(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None,blank=True,null=True)
+    thought = models.TextField(null=True)
+    image = models.ImageField(upload_to="images", height_field=None, width_field=None, max_length=None,blank=True,null=True)
     shared_with = models.ManyToManyField(User,related_name="thoughts",null=True,blank=True)
 
     def __str__(self):
