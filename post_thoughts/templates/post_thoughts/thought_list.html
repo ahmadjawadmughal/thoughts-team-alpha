@@ -1,38 +1,41 @@
 {% extends "post_thoughts/base.html" %} {% block content %}
 
-
-      <div class="container mt-5">
-        <h2>Welcome to the Thoughts!</h2>
-        <p>Please share the thoughts with us.</p>
-        <!-- Add your blog posts and content here -->
-        <div>
-        <div class="container mt-5">
-          <h2>Latest Blog Posts</h2>
-          {% for object in object_list %}
-          <div class="card" style="width: 18rem;margin:5px">
-            <img src="{% if object.image %}{{ object.image.url }}{% endif %}" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">{{object.title}}</h5>
-              <p class="card-text">{{object.thought}}</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-          {% endfor %}
-          <!-- Add more blog posts as needed -->
+<div class="container mt-5">
+  <h2>Welcome to the Thoughts!</h2>
+  <p>Please share the thoughts with us.</p>
+  <!-- Add your blog posts and content here -->
+  <div>
+    <div class="container mt-5">
+      <h2>Latest Blog Posts</h2>
+      {% for object in object_list %}
+      <div class="card" style="width: 18rem; margin: 5px">
+        <img
+          src="{% if object.image %}{{ object.image.url }}{% endif %}"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{object.title}}</h5>
+          <p class="card-text">{{object.thought}}</p>
+          <a href="#" class="btn btn-primary">Go</a>
         </div>
       </div>
-
-      <!--<div class="modal-body">
+      {% endfor %}
+      <!-- Add more blog posts as needed -->
+    </div>
+  </div>
+</div>
+<!--<div class="modal-body">
        
         
         
 
         <br /><br />
         <input type="submit" value="submit" />
-      </div>-->
+      </div>
       
     </div>
   </div>
-</div>
+</div>-->
 
 {% endblock %}

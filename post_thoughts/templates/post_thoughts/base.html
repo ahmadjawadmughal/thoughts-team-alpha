@@ -26,41 +26,72 @@
         color: white;
         padding: 20px 0;
       }
+      
+      .image-section img {
+        max-width: 100%; 
+        height: auto;
+      }
+      .image-section {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      }
+      .line{
+        border-color: #9cd208; /* Change the line color */
+        border-style: double; /* Change the line style (e.g., dashed, dotted) */
+        border-width: 3px; /* Change the line width */
+    }
+    
+      main {
+        padding: 20px;
+      }
+      .main-div{
+        margin: 30px;
+        padding: 30px;
+      }
+
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">
-        <img src="{% static 'image/logo(thoughts).PNG' %}" alt="Your Logo" height="30"> 
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "ListThoughts" %}">Thoughts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-        </ul>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="{% static 'image/logo.jpg' %}" alt="Your Logo" height="60"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url "Home" %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url "ListThoughts" %}">Thoughts</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="{% url "Profile" %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Users
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url "ListProfile" %}">Users Profiles</a></li>
+                <li><a class="dropdown-item" href="{% url "CreateComment" %}">Comment</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url "ListComment" %}">All Comments</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+          <div class="ml-auto">
+              <button class="btn btn-outline-light mr-2"><a href="{% url "login" %}" style="text-decoration: none;color:#fefefe">Login</a></button>
+              <button class="btn btn-outline-light"> <a href="{% url "signup" %}" style="text-decoration: none;color:#fefefe">Sign Up</a></button>
+          </div>
+        </div>
       </div>
-      <div class="ml-auto">
-        <button class="btn btn-outline-light mr-2">Login</button>
-        <button class="btn btn-outline-light">Sign Up</button>
-    </div>
     </nav>
     
   <!-- Section for static images -->
@@ -77,14 +108,14 @@
       </div>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="https://source.unsplash.com/1700x500/?blog" class="d-block w-100" alt="thoughts">
+          <img src="https://source.unsplash.com/1700x500/?blog+typing" class="d-block w-100" alt="thoughts">
           <div class="carousel-caption d-none d-md-block">
             <h5>Thoughts</h5>
             <p>Share your thoughts and ideas with us.</p>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="https://source.unsplash.com/1700x500/?idea" class="d-block w-100" alt="thoughts">
+          <img src="https://source.unsplash.com/1700x500/?blog,idea" class="d-block w-100" alt="thoughts">
           <div class="carousel-caption d-none d-md-block">
             <h5>Thoughts</h5>
             <p>Share your thoughts and ideas with us.</p>
@@ -108,12 +139,36 @@
       </button>
     </div>
   </div>
-
+  <main>
+  <hr class="line">
+  <section class="image-section">
+    <div><img src="{% static "image/image.png" %}" alt="Image" /></div>
+    <div class="main-div">
+      <h1>
+        <strong
+          >"Join the conversation - Discover the world of
+          MicroBlogging"</strong
+        >
+      </h1>
+      <p>
+        Welcome to Thought! a microBlogging platform that lets you express
+        yourself, connect with others, and stay updated on the latest trends
+        and conversations.
+      </p>
+    </div>
+  </section>
+  <hr class="line">
+</main>
     {% block content %} {% endblock %}
 
     <footer class="footer mt-5">
       <div class="container text-center">
-        <p>&copy; 2023 Your Blog. All rights reserved.</p>
+          <p>Contact Us: <a href="tel:0000-111-444">0000-111-444</a></p>
+          <ul style="list-style-type:none;">
+              <li>Email: <a href="mailto:contact@example.com">contact@example.com</a></li>
+              <li>Location: 123 Street, City, Country</li>
+          </ul>
+      <p>&copy; 2023 Thoughts</p>
       </div>
     </footer>
   </body>
