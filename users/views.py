@@ -1,19 +1,17 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from users.models import User, UserProfile
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
+#from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from users.forms import *
-# import email
-from django.core.mail import EmailMessage,send_mail 
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-from django.utils.encoding import force_str,force_bytes
-from Thoughts import settings
-from . tokens import generate_token
+
+
+
+ 
 
 @csrf_exempt
 def signup(request):
@@ -26,47 +24,25 @@ def signup(request):
         password_confirmation = request.POST["pswd_confirmation"]
 
         if User.objects.filter(username=username):
-            messages.error(request,"Username is already exist!")
+            messages.error(request, "Username is already exist!")
 
         if User.objects.filter(email=email):
-            messages.error(request,"Email is already exist!")
+            messages.error(request, "Email is already exist!")
 
-        user_signup = User(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
-        user_signup.is_active = True
-        user_signup.save()
+        if password != password_confirmation:
+            messages.error(request, "Passwords do not match.")
+        else:
+            #Save password securely
+            user_signup = User.objects.create_user(username=username, email=email, password=password, first_name= first_name, last_name=last_name)
+            user_signup.is_active = True
+            user_signup.save()
 
-        messages.success(request, "You are successfully signed up! We have also send you a confirmation email in order to activate your account.")
-
-        # Email
-
-        subject = "Welcome to Thoughts-Login!!"
-        message = "Hello"+ user_signup.first_name +"! \n"+"Welcome to Thoughts! \n Thank you for visiting our website \n Please confirm your email in order to activate your account. \n\n Thank you \n\n  Thoughts"
-        from_email = settings.EMAIL_HOST_USER
-        to_list = [user_signup.email]
-        send_mail(subject,message,from_email,to_list,fail_silently=True)
-
-        # Email address confirmation email
-
-        current_site = get_current_site(request)
-        email_subject = "Confirm your email @ Thoughts - Login!"
-        message2 = render_to_string("email_confirmation.html",{
-            "name" : user_signup.first_name,
-            "domain" : current_site.domain,
-            "uid" : urlsafe_base64_encode(force_bytes(user_signup.pk)),
-            "token" : generate_token.make_token(user_signup)
-        })
-        email = EmailMessage(
-            email_subject,
-            message2,
-            settings.EMAIL_HOST_USER,
-            [user_signup.email],
-        )
-        email.fail_silently = True
-        email.send()
-
-        return redirect("login")
+            messages.success(request, "You are successfully signed up!")
+            return redirect("login")
 
     return render(request, "users/user_form.html")
+
+
 
 @csrf_exempt
 def user_login(request):
@@ -79,56 +55,56 @@ def user_login(request):
         if user is not None:
             login(request, user)
             fname = user.first_name
-            return render(request, "post_thoughts/thought.html", {"fname": fname})
+
+            return render (request,"users/userprofile_list.html", {"fname": fname})
+            #return redirect('DetailProfile', user.pk) 
+            
         else:
             messages.error(request, "Wrong Credentials.")
             return redirect("login")
 
     return render(request, "users/login.html")
 
+
+
 @csrf_exempt
 def user_logout(request):
     logout(request)
     messages.success(request, "You are logged out!")
 
-    return redirect("Success")
+    return redirect("login")
 
-@csrf_exempt
-def activate(request,uidb64,token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user_signup = User.objects.get(pk=uid)
-
-    except (TypeError,ValueError,OverFlowError,User.DoesNotExist):
-        user_signup = None
-
-    if user_signup is not None and generate_token.check_token(user_signup,token):
-        user_signup.is_active = True 
-        user_signup.save()
-        login(request,user_signup)
-
-        return redirect("Success")
-
-    else:
-        return render(request,"activation_failed.html")        
 
 
 # CRUD operations
 
-class Profile(CreateView):
+class Profile(LoginRequiredMixin, CreateView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/Success/"
 
-class UpdateProfile(UpdateView):
-    model = UserProfile
-    fields = "__all__"
-    success_url = "/users/Success/"
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])    
 
-class DeleteProfile(DeleteView):
+    def get(self, request, *args, **kwargs):
+        # Only logged-in users can access this view
+        return super().get(request, *args, **kwargs)
+
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/Success/"
+    success_url = "/users/UpdateProfile/"
+        
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])        
+
+
+
+class DeleteProfile(LoginRequiredMixin, DeleteView):
+    model = UserProfile
+    fields = "__all__"
+    success_url = "/users/userprofile_confirm_delete.html"
 
 class ListProfile(ListView):
     model = UserProfile
@@ -136,8 +112,9 @@ class ListProfile(ListView):
 
 class DetailProfile(DetailView):
     model = UserProfile
-    success_url = "/users/Success/"            
+    #template_name = '/users/user_profile_detail.html/'
+    #success_url = "/users/Success/"            
 
-class Success(TemplateView):
+class Success(LoginRequiredMixin, TemplateView):
     template_name = "users/success.html/"
 

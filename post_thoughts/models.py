@@ -7,7 +7,7 @@ class Thought(models.Model):
     title = models.CharField(max_length=200)
     thought = models.TextField(null=True)
     image = models.ImageField(upload_to="images", height_field=None, width_field=None, max_length=None,blank=True,null=True)
-    shared_with = models.ManyToManyField(User,related_name="thoughts",null=True,blank=True)
+    shared_with = models.ManyToManyField(User,related_name="thoughts")
 
     def __str__(self):
         return self.title
