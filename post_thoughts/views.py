@@ -66,3 +66,9 @@ class DetailComment(DetailView):
 class SuccessComment(TemplateView):
 
     template_name = "post_thoughts/success.html/"
+
+
+# home page
+
+class Home(TemplateView):
+    template_name = "post_thoughts/home.html"

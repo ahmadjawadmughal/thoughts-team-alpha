@@ -1,9 +1,58 @@
-<html>
-  <!--for ListView-->
-  <ul style="list-style-type:number;font-size:x-large">
-    {% for i in object_list %}
-    <li>Bio:{{ i.bio }}</li></br>
-    <li>City:{{ i.city }}</li></br>
-    {% endfor %}
-  </ul>
-</html>
+{% extends "users/base.html" %} {% block content %}
+
+<div class="container mt-5">
+  <h2>Welcome to the User Profiles!</h2>
+  <p>Lets connect with the people.</p>
+
+  <!-- Add your blog posts and content here -->
+  <div>
+    <div class="container mt-5">
+      <h2>Latest Blog Posts</h2>
+      {% for object in object_list %}
+      <div class="card" style="width: 18rem; margin: 5px">
+        <img
+          src="{% if object.profile_picture %}{{ object.profile_picture.url }}{% endif %}"
+          class="card-img-top"
+          alt="user profile"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{object.user}}</h5>
+          <p class="card-text"><h6>Bio:{{object.bio}}</h6></p>
+          <p class="card-text"><h6>City:{{object.city}}</h6></p>
+          <a href="#" class="btn btn-primary">Go</a>
+        </div>
+      </div>
+     
+      {% endfor %}
+      <!-- Add more blog posts as needed -->
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% comment "main" %}
+<main>
+  <div class="container mt-5">
+    <h2>Welcome to the Profiles!</h2>
+    <p>Lets connect with the people.</p>
+    <!-- Add your blog posts and content here -->
+    <div>
+    <div class="container mt-5">
+      <h2>Users Profile</h2>
+      {% for i in object_list %}
+      <div class="card" style="width: 18rem;margin:5px">
+        <img src="{% if i.image %}{{ i.image.url }}{% endif %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ i.user }}</h5>
+          <p class="card-text"><h6>City:{{ i.bio }}</h6></p>
+          <p class="card-text"><h6>City:{{ i.city }}</h6></p>
+          <a href="#" class="btn btn-primary">Go</a>
+        </div>
+      </div>
+      {% endfor %}
+      <!-- Add more blog posts as needed -->
+    </div>
+  </div>
+</main>
+{% endblock %}
+{% endcomment %}

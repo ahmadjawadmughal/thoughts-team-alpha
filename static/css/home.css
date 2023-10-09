@@ -1,0 +1,146 @@
+
+
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+
+.logo img {
+    max-width: 80px;
+    height: auto;
+    border-radius: 10px ;
+    align-items: center;
+}
+
+
+main {
+    padding: 20px;
+}
+.main-div{
+    margin: 30px;
+    padding: 30px;
+}
+
+.image-section img {
+    max-width: 100%; 
+    height: auto;
+}
+.image-section {
+display: flex;
+align-items: center;
+margin-top: 20px;
+}
+
+.slider {
+    width: 100%;
+    height: 510px;
+    position: relative;
+  }
+  
+.slider img {
+    width: 100%;
+    height: 500px;
+    position:absolute;
+    top:0;
+    left:0;
+  }
+  .navigation-button {
+    text-align: center;
+    position: relative;
+  }
+  
+  .dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .active,
+  .dot:hover {
+    background-color: #717171;
+  }
+  .slider img:first-child {
+    z-index: 1;
+  }
+  
+  .slider img:nth-child(2) {
+    z-index: 0;
+  }
+
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.contact-info {
+    margin-bottom: 20px;
+}
+
+.contact-info p {
+    font-size: 18px;
+}
+
+.contact-info ul {
+    list-style-type: none;
+}
+
+.contact-info ul li {
+    margin: 5px 0;
+}
+
+.contact-info ul li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.contact-info ul li a:hover {
+    text-decoration: underline;
+}
+.line{
+    border-color: #9cd208; /* Change the line color */
+    border-style: double; /* Change the line style (e.g., dashed, dotted) */
+    border-width: 3px; /* Change the line width */
+}
+
+

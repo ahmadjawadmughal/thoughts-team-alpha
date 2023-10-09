@@ -1,12 +1,11 @@
-</head>
-
+{% extends "post_thoughts/base.html" %} {% block content %}
 <form method="POST" enctype="multipart/form-data">
   <!-- Security token -->
   {% csrf_token %}
-  <h1>Comment FORM (class based view)</h1>
+  <h1>Type your Comment!</h1>
   <!-- Using the formset -->
   {{ form.as_p }}
 
   <input type="submit" value="OK" class="btn btn-success" />
 </form>
-</html>
+{% endblock %}

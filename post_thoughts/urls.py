@@ -14,4 +14,6 @@ urlpatterns = [
     path("ListComment/",ListComment.as_view(),name="ListComment"),
     path("DetailComment/<pk>",DetailComment.as_view(), name="DetailComment"),
     path("SuccessComment/",SuccessComment.as_view(),name="SuccessComment"),
+    # home page
+    path("home/", Home.as_view(), name="Home"),
 ]
