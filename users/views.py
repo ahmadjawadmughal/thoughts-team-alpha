@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from users.models import User, UserProfile
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
@@ -58,7 +58,7 @@ def user_login(request):
 
             return render (request,"users/userprofile_list.html", {"fname": fname})
             #return redirect('DetailProfile', user.pk) 
-            
+
         else:
             messages.error(request, "Wrong Credentials.")
             return redirect("login")
@@ -70,7 +70,7 @@ def user_login(request):
 @csrf_exempt
 def user_logout(request):
     logout(request)
-    messages.success(request, "You are logged out!")
+    messages.success(request, "You are logged out!") 
 
     return redirect("login")
 
@@ -97,8 +97,9 @@ class UpdateProfile(LoginRequiredMixin, UpdateView):
     success_url = "/users/UpdateProfile/"
         
     def get_success_url(self):
-        return reverse('DetailProfile', args=[self.object.user.pk])        
-
+        return reverse('DetailProfile', args=[self.object.user.pk])
+       
+    login_url = reverse_lazy('login')
 
 
 class DeleteProfile(LoginRequiredMixin, DeleteView):
@@ -106,15 +107,19 @@ class DeleteProfile(LoginRequiredMixin, DeleteView):
     fields = "__all__"
     success_url = "/users/userprofile_confirm_delete.html"
 
+    login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect to login page 
+
+
 class ListProfile(ListView):
     model = UserProfile
     success_urls = "/users/Success/"
+
 
 class DetailProfile(DetailView):
     model = UserProfile
     #template_name = '/users/user_profile_detail.html/'
     #success_url = "/users/Success/"            
 
-class Success(LoginRequiredMixin, TemplateView):
+class Success(TemplateView):
     template_name = "users/success.html/"
 
