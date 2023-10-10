@@ -7,6 +7,9 @@ urlpatterns = [
     path("login/",user_login, name="login"),
     path("logout/",user_logout, name="logout"),
     path("Success/",Success.as_view(),name="Success"),
+
+    path("ChangePass/", Changepass.as_view(), name="ChangePassword"),
+
     # CRUD
     path("profile/",Profile.as_view(), name="Profile"),
     path("UpdateProfile/<pk>",UpdateProfile.as_view(), name="UpdateProfile"),

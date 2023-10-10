@@ -14,6 +14,18 @@ class Home(TemplateView):
 
 
 
+class ChangePass(LoginRequiredMixin, UpdateView):
+    model = Thought
+    fields = ["password"]
+
+    def get_success_url(self):
+        #redirect to detailthought view with a specific primary key
+        #return reverse('DetailThoughts', args=[self.object.user.pk])
+        return reverse('ListThoughts')
+    
+    login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect user for login page
+    
+
 class CreateThoughts(LoginRequiredMixin, CreateView):
     model = Thought
     fields = "__all__"
@@ -24,6 +36,7 @@ class CreateThoughts(LoginRequiredMixin, CreateView):
         return reverse('ListThoughts')
     
     login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect user for login page
+
 
 
 
@@ -45,6 +58,10 @@ class DeleteThoughts(LoginRequiredMixin, DeleteView):
         return reverse('DetailThoughts', args=[self.object.user.pk])
     login_url = reverse_lazy('login')
 
+    def get_object(self, queryset=None):
+    # Retrieve the object to be deleted using the 'pk' from the URL
+        return self.model.objects.get(pk=self.kwargs['pk'])
+
 
 
 class ListThoughts(ListView):
@@ -57,7 +74,10 @@ class ListThoughts(ListView):
 class DetailThoughts(DetailView):
     model = Thought
     #template_name = "post_thoughts/success.html/"
-    success_url = "/thoughts/Success/"        
+    #success_url = "/thoughts/Success/" 
+    def get_success_url(self):
+        return reverse('DetailThoughts', args=[self.object.user.pk])  
+    login_url = reverse_lazy('login')       
 
 
 
@@ -65,36 +85,40 @@ class Success(TemplateView):
     template_name = "post_thoughts/success.html/"
 
 
-
 # CRUD for the Comment Model
 
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
     fields = "__all__"
-
+    
+    success_url = "/thoughts/SuccessComment/"
     def get_success_url(self):
-        # Assuming you want to redirect to the user_profile view with a specific primary key
-        return reverse('DetailComment', args=[self.object.user.pk])
+        return reverse('SuccessComment') 
     login_url = reverse_lazy('login')
-
 
 class UpdateComment(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = "__all__"
-
-    success_url = "/thoughts/comment_detail.html/"
+    
+    def get_success_url(self):
+        # Assuming you want to redirect to the user_profile view with a specific primary key
+        return reverse('DetailComment', args=[self.object.user.pk])
+    
     login_url = reverse_lazy('login')
+
 
 class DeleteComment(LoginRequiredMixin, DeleteView):
     model = Comment
     fields = "__all__"
+    
 
-    success_url = "/thoughts/SuccessComment/"
+    success_url = "/thoughts/"
     login_url = reverse_lazy('login')
+   
 
 class ListComment(ListView):
      model = Comment
-
+     template_name = "post_thoughts/comment_list.html"
      success_url = "/thoughts/SuccessComment/"
 
 class DetailComment(DetailView):
@@ -105,6 +129,6 @@ class DetailComment(DetailView):
 
 class SuccessComment(TemplateView):
 
-    template_name = "post_thoughts/success.html/"
+    template_name = "post_thoughts/comment_list.html/"
 
 

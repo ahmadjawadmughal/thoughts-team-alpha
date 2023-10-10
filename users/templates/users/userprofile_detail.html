@@ -10,9 +10,15 @@
     <h1>Welcome, {{ fname }}</h1>
     <div>
         <h2>User Details:</h2>
-        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-        <p><strong>Bio:</strong> {{ user.bio }}</p>
-        <p><strong>City:</strong> {{ user.city }}</p>
+        <p><strong>ID:</strong> {{ object.id }}</p>
+        <p><strong>Name:</strong> {{ object.user }}</p>
+        <p><strong>Bio:</strong> {{ object.bio }}</p>
+        <p><strong>City:</strong> {{ object.city }}</p>
+        <p><strong>Date of Birth:</strong>{{object.date_of_birth}}</p>
+
+        
+        <a href="{% url 'ListProfile' %}" class="btn btn-primary">Go to Profile</a>
+
     </div>
   
 </body>

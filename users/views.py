@@ -6,12 +6,51 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
-#from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib import messages
+
+"""
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, SetPasswordForm
+from django.contrib.auth import update_session_auth_hash, authenticate
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+"""
+
+# Create your views here.
+
+class Changepass(PasswordChangeView):
+    template_name = 'users/change_password.html'  # Specify your template
+      
+
+    def form_valid(self, form):
+        messages.success(self.request, "Changed password successfully.")
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('ListProfile')
 
 
- 
+"""
+def change_pass(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':   
+            form = PasswordChangeForm(user=request.user, data=request.POST)    #with old password required
+            #form = SetPasswordForm(user=request.user, data=request.POST)   #we can use this as well, then no old password field to change password
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Changed password successfully.")
+                #update session as well
+                update_session_auth_hash(request, form.user)
+                return redirect("ListProfile")
+        else:
+            form = PasswordChangeForm(user=request.user)
+            return render (request, "users/change_password.html", {'form': form})
+    else:
+        return redirect("login")
+"""
+
+
 
 @csrf_exempt
 def signup(request):
@@ -49,8 +88,7 @@ def user_login(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["pswd"]
-        user = authenticate(request, username=username, password=password)
-        
+        user = authenticate(request, username=username, password=password)     
         
         if user is not None:
             login(request, user)
@@ -71,7 +109,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     messages.success(request, "You are logged out!") 
-
     return redirect("login")
 
 
@@ -94,11 +131,17 @@ class Profile(LoginRequiredMixin, CreateView):
 class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/UpdateProfile/"
+    #success_url = "/users/UpdateProfile/"
         
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])
-       
+    
+    #overwrite dispatch functon to check the userprofile already exist or not
+    def dispatch(self, request, *args, **kwargs):  
+        if not UserProfile.objects.filter(user=request.user).exists():  #check if userprofile not exists redirect to createprofile 
+            return redirect('Profile') 
+        return super().dispatch(request, *args, **kwargs)
+
     login_url = reverse_lazy('login')
 
 
@@ -106,7 +149,6 @@ class DeleteProfile(LoginRequiredMixin, DeleteView):
     model = UserProfile
     fields = "__all__"
     success_url = "/users/userprofile_confirm_delete.html"
-
     login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect to login page 
 
 
@@ -117,6 +159,10 @@ class ListProfile(ListView):
 
 class DetailProfile(DetailView):
     model = UserProfile
+
+    
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
     #template_name = '/users/user_profile_detail.html/'
     #success_url = "/users/Success/"            
 
