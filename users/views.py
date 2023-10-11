@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+from typing import Any
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from users.models import User, UserProfile
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib import messages
@@ -121,35 +123,119 @@ class Profile(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])    
+    
+    def form_valid(self, form):
+        already_profile = UserProfile.objects.filter(user=self.request.user).first()
+        if already_profile:
+            return redirect('UpdateProfile', pk=already_profile.pk)   #we can display msg as already profile exists just update
+            #return HttpResponseForbidden("You already have a profile.")
+        else:    
+            form.instance.user = self.request.user  # Assigned the user to the profile
+            return super().form_valid(form)
 
+"""
     def get(self, request, *args, **kwargs):
         # Only logged-in users can access this view
         return super().get(request, *args, **kwargs)
-
+"""
 
 
 class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
     fields = "__all__"
     #success_url = "/users/UpdateProfile/"
-        
+    login_url = reverse_lazy('login')
+
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])
     
+    def get_object(self, queryset=None):
+        return UserProfile.objects.get(user=self.request.user)  # get the existing profile for the current user
+    
+    def dispatch(self, request, *args, **kwargs):        
+        if not UserProfile.objects.filter(user=request.user).exists():  # Check if the user has a profile
+            return redirect('Profile')  # If no profile exists, redirect to create profile
+        return super().dispatch(request, *args, **kwargs)
+    
+    
+
+"""
     #overwrite dispatch functon to check the userprofile already exist or not
-    def dispatch(self, request, *args, **kwargs):  
+    def dispatch(self, request, *args, **kwargs):
+        #userprofile = UserProfile.get_object_or_404(user=request.user)
+        userprofile = get_object_or_404(UserProfile, user=request.user)
+        if self.get_object() != userprofile:
+            return redirect (Profile)
+        else:
+            return super().dispatch(request, *args, **kwargs)
+          
+    login_url = reverse_lazy('login')
+"""
+"""
         if not UserProfile.objects.filter(user=request.user).exists():  #check if userprofile not exists redirect to createprofile 
             return redirect('Profile') 
         return super().dispatch(request, *args, **kwargs)
+        """
+
+
+"""
+from django.http import HttpResponseForbidden
+
+class Profile(LoginRequiredMixin, CreateView):
+    model = UserProfile
+    fields = "__all"
+
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+
+    def form_valid(self, form):
+        # Check if a profile already exists for the user
+        existing_profile = UserProfile.objects.filter(user=self.request.user).first()
+        if existing_profile:
+            # A profile already exists, show an error or redirect to the existing profile
+            return HttpResponseForbidden("You already have a profile.")
+        else:
+            form.instance.user = self.request.user  # Assign the user to the profile
+            return super().form_valid(form)
+
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
+    model = UserProfile
+    fields = "__all"
+
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+
+    def dispatch(self, request, *args, **kwargs):
+        # Ensure the user can only update their own profile
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        if self.get_object() != user_profile:
+            return redirect('Profile')  # Redirect if the user is trying to update someone else's profile
+        return super().dispatch(request, *args, **kwargs)
 
     login_url = reverse_lazy('login')
+"""
+
+
 
 
 class DeleteProfile(LoginRequiredMixin, DeleteView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/userprofile_confirm_delete.html"
-    login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect to login page 
+    #success_url = "/users/ListProfile/"
+    login_url = reverse_lazy('login')   
+
+    def post(self, request, *args, **kwargs):
+        if 'confirm' in request.POST:
+            return super().delete(request, *args, **kwargs)
+        else:
+            return redirect ("ListProfile")  #also the deletetion cancelled
+    
+    def get_success_url(self):
+        return reverse ('ListProfile')  #after deletion reverse to ListProfile
+
+
 
 
 class ListProfile(ListView):
@@ -159,13 +245,19 @@ class ListProfile(ListView):
 
 class DetailProfile(DetailView):
     model = UserProfile
-
     
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])
+    
     #template_name = '/users/user_profile_detail.html/'
     #success_url = "/users/Success/"            
 
+
+
+
 class Success(TemplateView):
     template_name = "users/success.html/"
+
+
+
 

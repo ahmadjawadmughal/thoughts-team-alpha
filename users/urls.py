@@ -7,6 +7,7 @@ urlpatterns = [
     path("login/",user_login, name="login"),
     path("logout/",user_logout, name="logout"),
     path("Success/",Success.as_view(),name="Success"),
+    #path("ConfirmDeleteProfie/",Confirm_delete_profile.as_view(),name="ConfirmDeleteProfie"),
 
     path("ChangePass/", Changepass.as_view(), name="ChangePassword"),
 

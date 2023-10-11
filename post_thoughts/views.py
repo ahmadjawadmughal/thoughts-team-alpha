@@ -63,7 +63,6 @@ class DeleteThoughts(LoginRequiredMixin, DeleteView):
         return self.model.objects.get(pk=self.kwargs['pk'])
 
 
-
 class ListThoughts(ListView):
     model = Thought
     template_name = "post_thoughts/thought_list.html"
@@ -77,6 +76,10 @@ class DetailThoughts(DetailView):
     #success_url = "/thoughts/Success/" 
     def get_success_url(self):
         return reverse('DetailThoughts', args=[self.object.user.pk])  
+                    
+    def get_object(self, queryset=None):
+    # Retrieve the object to be deleted using the 'pk' from the URL
+        return self.model.objects.get(pk=self.kwargs['pk'])
     login_url = reverse_lazy('login')       
 
 
@@ -90,29 +93,37 @@ class Success(TemplateView):
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
     fields = "__all__"
-    
-    success_url = "/thoughts/SuccessComment/"
-    def get_success_url(self):
-        return reverse('SuccessComment') 
+    success_url = reverse_lazy("ListComment")
     login_url = reverse_lazy('login')
+    
+    
 
 class UpdateComment(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = "__all__"
-    
+    """
+    success_url = reverse_lazy("ListComment")
+    """
     def get_success_url(self):
         # Assuming you want to redirect to the user_profile view with a specific primary key
         return reverse('DetailComment', args=[self.object.user.pk])
-    
-    login_url = reverse_lazy('login')
+    """
+    def get_object(self, queryset=None):
+    # Retrieve the object to be deleted using the 'pk' from the URL
+        return self.model.objects.get(pk=self.kwargs['pk'])
+"""
+    login_url = reverse_lazy('login')         
 
 
 class DeleteComment(LoginRequiredMixin, DeleteView):
     model = Comment
     fields = "__all__"
-    
 
-    success_url = "/thoughts/"
+    def get_success_url(self):
+        # Assuming you want to redirect to the user_profile view with a specific primary key
+        return reverse('DetailComment', args=[self.object.user.pk]) 
+
+    #success_url = "/thoughts/"
     login_url = reverse_lazy('login')
    
 
