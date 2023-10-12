@@ -1,13 +1,14 @@
 {% extends "users/base.html" %} {% block content %}
 
 <div class="container mt-5">
-  <h2>Welcome to the User Profiles!</h2>
+  <h2>Welcome to the User Profiles! </h2>
   <p>Lets connect with the people.</p>
 
   <!-- Add your blog posts and content here -->
   <div>
     <div class="container mt-5">
       <h2>Latest Blog Posts</h2>
+
       {% for object in object_list %}
       <div class="card" style="width: 18rem; margin: 5px">
         <img
@@ -17,9 +18,8 @@
         />
         <div class="card-body">
           <h5 class="card-title">{{object.user}}</h5>
-          <p class="card-text"><h6>Bio:{{object.bio}}</h6></p>
-          <p class="card-text"><h6>City:{{object.city}}</h6></p>
-          <a href="#" class="btn btn-primary">Go</a>
+
+          <a href="{% url 'DetailProfile' object.pk %}" class="btn btn-primary">See Profile Details</a>
         </div>
       </div>
      

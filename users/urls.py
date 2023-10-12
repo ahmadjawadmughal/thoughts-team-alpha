@@ -6,8 +6,11 @@ urlpatterns = [
     path("signup/", signup, name="signup"),
     path("login/",user_login, name="login"),
     path("logout/",user_logout, name="logout"),
-    path("activate/<uidb64>/<token>",activate, name="activate"),
     path("Success/",Success.as_view(),name="Success"),
+    #path("ConfirmDeleteProfie/",Confirm_delete_profile.as_view(),name="ConfirmDeleteProfie"),
+
+    path("ChangePass/", Changepass.as_view(), name="ChangePassword"),
+
     # CRUD
     path("profile/",Profile.as_view(), name="Profile"),
     path("UpdateProfile/<pk>",UpdateProfile.as_view(), name="UpdateProfile"),

@@ -9,6 +9,8 @@
 {% csrf_token %} 
 <p>Are you sure you want to delete <strong>"{{ object.bio }}"</strong>?</p><p>User: {{ object.user}}</p><p>City: {{object.city}}</p></br>
 <input type="submit" value="Delete" class="btn btn-danger"/>
+
+<a href="{% url 'Profile' %}">Cancel</a>
 </form>
 </div>
 </html>

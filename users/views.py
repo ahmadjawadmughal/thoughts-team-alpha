@@ -1,19 +1,58 @@
-from django.shortcuts import render, redirect
+from typing import Any
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse, reverse_lazy
 from users.models import User, UserProfile
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
-from users.forms import *
-# import email
-from django.core.mail import EmailMessage,send_mail 
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
-from django.utils.encoding import force_str,force_bytes
-from Thoughts import settings
-from . tokens import generate_token
+
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib import messages
+
+"""
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, SetPasswordForm
+from django.contrib.auth import update_session_auth_hash, authenticate
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+"""
+
+# Create your views here.
+
+class Changepass(PasswordChangeView):
+    template_name = 'users/change_password.html'  # Specify your template
+      
+
+    def form_valid(self, form):
+        messages.success(self.request, "Changed password successfully.")
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('ListProfile')
+
+
+"""
+def change_pass(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':   
+            form = PasswordChangeForm(user=request.user, data=request.POST)    #with old password required
+            #form = SetPasswordForm(user=request.user, data=request.POST)   #we can use this as well, then no old password field to change password
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Changed password successfully.")
+                #update session as well
+                update_session_auth_hash(request, form.user)
+                return redirect("ListProfile")
+        else:
+            form = PasswordChangeForm(user=request.user)
+            return render (request, "users/change_password.html", {'form': form})
+    else:
+        return redirect("login")
+"""
+
+
 
 @csrf_exempt
 def signup(request):
@@ -26,118 +65,199 @@ def signup(request):
         password_confirmation = request.POST["pswd_confirmation"]
 
         if User.objects.filter(username=username):
-            messages.error(request,"Username is already exist!")
+            messages.error(request, "Username is already exist!")
 
         if User.objects.filter(email=email):
-            messages.error(request,"Email is already exist!")
+            messages.error(request, "Email is already exist!")
 
-        user_signup = User(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
-        user_signup.is_active = True
-        user_signup.save()
+        if password != password_confirmation:
+            messages.error(request, "Passwords do not match.")
+        else:
+            #Save password securely
+            user_signup = User.objects.create_user(username=username, email=email, password=password, first_name= first_name, last_name=last_name)
+            user_signup.is_active = True
+            user_signup.save()
 
-        messages.success(request, "You are successfully signed up! We have also send you a confirmation email in order to activate your account.")
-
-        # Email
-
-        subject = "Welcome to Thoughts-Login!!"
-        message = "Hello"+ user_signup.first_name +"! \n"+"Welcome to Thoughts! \n Thank you for visiting our website \n Please confirm your email in order to activate your account. \n\n Thank you \n\n  Thoughts"
-        from_email = settings.EMAIL_HOST_USER
-        to_list = [user_signup.email]
-        send_mail(subject,message,from_email,to_list,fail_silently=True)
-
-        # Email address confirmation email
-
-        current_site = get_current_site(request)
-        email_subject = "Confirm your email @ Thoughts - Login!"
-        message2 = render_to_string("email_confirmation.html",{
-            "name" : user_signup.first_name,
-            "domain" : current_site.domain,
-            "uid" : urlsafe_base64_encode(force_bytes(user_signup.pk)),
-            "token" : generate_token.make_token(user_signup)
-        })
-        email = EmailMessage(
-            email_subject,
-            message2,
-            settings.EMAIL_HOST_USER,
-            [user_signup.email],
-        )
-        email.fail_silently = True
-        email.send()
-
-        return redirect("login")
+            messages.success(request, "You are successfully signed up!")
+            return redirect("login")
 
     return render(request, "users/user_form.html")
+
+
 
 @csrf_exempt
 def user_login(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["pswd"]
-        user = authenticate(request, username=username, password=password)
-        
+        user = authenticate(request, username=username, password=password)     
         
         if user is not None:
             login(request, user)
             fname = user.first_name
-            return render(request, "post_thoughts/thought.html", {"fname": fname})
+
+            return render (request,"users/userprofile_list.html", {"fname": fname})
+            #return redirect('DetailProfile', user.pk) 
+
         else:
             messages.error(request, "Wrong Credentials.")
             return redirect("login")
 
     return render(request, "users/login.html")
 
+
+
 @csrf_exempt
 def user_logout(request):
     logout(request)
-    messages.success(request, "You are logged out!")
+    messages.success(request, "You are logged out!") 
+    return redirect("login")
 
-    return redirect("Success")
-
-@csrf_exempt
-def activate(request,uidb64,token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user_signup = User.objects.get(pk=uid)
-
-    except (TypeError,ValueError,OverFlowError,User.DoesNotExist):
-        user_signup = None
-
-    if user_signup is not None and generate_token.check_token(user_signup,token):
-        user_signup.is_active = True 
-        user_signup.save()
-        login(request,user_signup)
-
-        return redirect("Success")
-
-    else:
-        return render(request,"activation_failed.html")        
 
 
 # CRUD operations
 
-class Profile(CreateView):
+class Profile(LoginRequiredMixin, CreateView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/Success/"
 
-class UpdateProfile(UpdateView):
-    model = UserProfile
-    fields = "__all__"
-    success_url = "/users/Success/"
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])    
+    
+    def form_valid(self, form):
+        already_profile = UserProfile.objects.filter(user=self.request.user).first()
+        if already_profile:
+            return redirect('UpdateProfile', pk=already_profile.pk)   #we can display msg as already profile exists just update
+            #return HttpResponseForbidden("You already have a profile.")
+        else:    
+            form.instance.user = self.request.user  # Assigned the user to the profile
+            return super().form_valid(form)
 
-class DeleteProfile(DeleteView):
+"""
+    def get(self, request, *args, **kwargs):
+        # Only logged-in users can access this view
+        return super().get(request, *args, **kwargs)
+"""
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
     fields = "__all__"
-    success_url = "/users/Success/"
+    #success_url = "/users/UpdateProfile/"
+    login_url = reverse_lazy('login')
+
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+    
+    def get_object(self, queryset=None):
+        return UserProfile.objects.get(user=self.request.user)  # get the existing profile for the current user
+    
+    def dispatch(self, request, *args, **kwargs):        
+        if not UserProfile.objects.filter(user=request.user).exists():  # Check if the user has a profile
+            return redirect('Profile')  # If no profile exists, redirect to create profile
+        return super().dispatch(request, *args, **kwargs)
+    
+    
+
+"""
+    #overwrite dispatch functon to check the userprofile already exist or not
+    def dispatch(self, request, *args, **kwargs):
+        #userprofile = UserProfile.get_object_or_404(user=request.user)
+        userprofile = get_object_or_404(UserProfile, user=request.user)
+        if self.get_object() != userprofile:
+            return redirect (Profile)
+        else:
+            return super().dispatch(request, *args, **kwargs)
+          
+    login_url = reverse_lazy('login')
+"""
+"""
+        if not UserProfile.objects.filter(user=request.user).exists():  #check if userprofile not exists redirect to createprofile 
+            return redirect('Profile') 
+        return super().dispatch(request, *args, **kwargs)
+        """
+
+
+"""
+from django.http import HttpResponseForbidden
+
+class Profile(LoginRequiredMixin, CreateView):
+    model = UserProfile
+    fields = "__all"
+
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+
+    def form_valid(self, form):
+        # Check if a profile already exists for the user
+        existing_profile = UserProfile.objects.filter(user=self.request.user).first()
+        if existing_profile:
+            # A profile already exists, show an error or redirect to the existing profile
+            return HttpResponseForbidden("You already have a profile.")
+        else:
+            form.instance.user = self.request.user  # Assign the user to the profile
+            return super().form_valid(form)
+
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
+    model = UserProfile
+    fields = "__all"
+
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+
+    def dispatch(self, request, *args, **kwargs):
+        # Ensure the user can only update their own profile
+        user_profile = get_object_or_404(UserProfile, user=request.user)
+        if self.get_object() != user_profile:
+            return redirect('Profile')  # Redirect if the user is trying to update someone else's profile
+        return super().dispatch(request, *args, **kwargs)
+
+    login_url = reverse_lazy('login')
+"""
+
+
+
+
+class DeleteProfile(LoginRequiredMixin, DeleteView):
+    model = UserProfile
+    fields = "__all__"
+    #success_url = "/users/ListProfile/"
+    login_url = reverse_lazy('login')   
+
+    def post(self, request, *args, **kwargs):
+        if 'confirm' in request.POST:
+            return super().delete(request, *args, **kwargs)
+        else:
+            return redirect ("ListProfile")  #also the deletetion cancelled
+    
+    def get_success_url(self):
+        return reverse ('ListProfile')  #after deletion reverse to ListProfile
+
+
+
 
 class ListProfile(ListView):
     model = UserProfile
     success_urls = "/users/Success/"
 
+
 class DetailProfile(DetailView):
     model = UserProfile
-    success_url = "/users/Success/"            
+    
+    def get_success_url(self):
+        return reverse('DetailProfile', args=[self.object.user.pk])
+    
+    #template_name = '/users/user_profile_detail.html/'
+    #success_url = "/users/Success/"            
+
+
+
 
 class Success(TemplateView):
     template_name = "users/success.html/"
+
+
+
 

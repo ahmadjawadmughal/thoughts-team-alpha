@@ -71,13 +71,32 @@
               <a class="nav-link dropdown-toggle" href="{% url "Profile" %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Users
               </a>
+
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url "ListProfile" %}">Users Profiles</a></li>
-                <li><a class="dropdown-item" href="{% url "CreateComment" %}">Comment</a></li>
-                <li><hr class="dropdown-divider"></li>
+                
+                <li><a class="dropdown-item" href="{% url "CreateComment" %}">Create Comment</a></li>
+                <li><a class="dropdown-item" href="{% url "UpdateComment" user.pk %}">Update Comment</a></li>                
+                <li><a class="dropdown-item" href="{% url "DeleteComment" user.pk %}">Delete Comment</a></li>                        
                 <li><a class="dropdown-item" href="{% url "ListComment" %}">All Comments</a></li>
+                        
+                <li><a class="dropdown-item" href="{% url "Profile"  %}">Create Profile</a></li>
+                <li><a class="dropdown-item" href="{% url "UpdateProfile" user.pk %}">Update Profile</a></li>   
+                <li><a class="dropdown-item" href="{% url "DeleteProfile" user.pk %}">Delete Profile</a></li>
+
+                <li><a class="dropdown-item" href="{% url "CreateThoughts" %}">Create Thought</a></li>
+                <li><a class="dropdown-item" href="{% url "UpdateThought" user.pk %}">Update Thought</a></li>
+                <li><a class="dropdown-item" href="{% url "DeleteThoughts" user.pk %}">Delete Thought</a></li>
+                <li><a class="dropdown-item" href="{% url "ListThoughts" %}">My Thought</a></li>
+
+                <li><a class="dropdown-item" href="{% url "ChangePassword" %}">Change Password</a></li>
+                <li><a class="dropdown-item" href="{% url "logout" %}">logout</a></li>
+
+                <li><hr class="dropdown-divider"></li>
               </ul>
+
             </li>
+
             <li class="nav-item">
               <a class="nav-link disabled" aria-disabled="true">Disabled</a>
             </li>
