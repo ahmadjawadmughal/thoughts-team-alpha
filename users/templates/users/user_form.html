@@ -1,33 +1,152 @@
 {% extends "users/base.html" %} {% block content %}
-<!-- Navbar -->
-
-
-  <div class="signup-container">
-    <h2>Sign Up</h2>
-    <form action="{% url "signup" %}" method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username">
-
-      <label for="first_name">First Name:</label>
-      <input type="text" id="first_name" name="first_name" required />
-
-      <label for="last_name">Last Name:</label>
-      <input type="text" id="last_name" name="last_name" required />
-
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required />
-
-      <label for="pswd">Password:</label>
-      <input type="password" id="pswd" name="pswd" required />
-
-      <label for="pswd_confirmation">Password Confirmation:</label>
-      <input type="password" id="pswd_confirmation" name="pswd_confirmation" />
-
-      <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="{% url "login" %}">Login</a></p>
+<div class="container px-5">
+  <!-- Contact form-->
+  <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+    <div class="text-center mb-5">
+      <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+        <i class="bi bi-envelope"></i>
+      </div>
+      <h1 class="fw-bolder">Signup</h1>
+      <p class="lead fw-normal text-muted mb-0">
+        Let's connect with us!
+      </p>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-8 col-xl-6">
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- * * SB Forms Contact Form * *-->
+        <!-- * * * * * * * * * * * * * * *-->
+        <!-- This form is pre-integrated with SB Forms.-->
+        <!-- To make this form functional, sign up at-->
+        <!-- https://startbootstrap.com/solution/contact-forms-->
+        <!-- to get an API token!-->
+        <form action="{% url "signup" %}" method="POST" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
+           {% csrf_token %}
+            <!--Username-->
+            <div class="form-floating mb-3">
+                <input
+                  class="form-control"
+                  id="username"
+                  type="text"
+                  placeholder="Enter your name..."
+                  data-sb-validations="required"
+                />
+                <label for="username">Username</label>
+                <div class="invalid-feedback" data-sb-feedback="name:required">
+                  A name is required.
+                </div>
+              </div>
+              
+          <!-- Name input-->
+          <div class="form-floating mb-3">
+            <input
+              class="form-control"
+              id="first_name"
+              type="text"
+              placeholder="Enter your first name..."
+              data-sb-validations="required"
+            />
+            <label for="first_name">first name</label>
+            <div class="invalid-feedback" data-sb-feedback="name:required">
+              A name is required.
+            </div>
+          </div>
+          <!--LAST NAME-->
+          <div class="form-floating mb-3">
+            <input
+              class="form-control"
+              id="last_name"
+              type="text"
+              placeholder="Enter your last name..."
+              data-sb-validations="required"
+            />
+            <label for="last_name">Last name</label>
+            <div class="invalid-feedback" data-sb-feedback="name:required">
+              A name is required.
+            </div>
+          </div>
+          <!-- Email address input-->
+          <div class="form-floating mb-3">
+            <input
+              class="form-control"
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              data-sb-validations="required,email"
+            />
+            <label for="email">Email address</label>
+            <div class="invalid-feedback" data-sb-feedback="email:required">
+              An email is required.
+            </div>
+            <div class="invalid-feedback" data-sb-feedback="email:email">
+              Email is not valid.
+            </div>
+          </div>
+          <!--Password-->
+          <div class="form-floating mb-3">
+            <input
+              class="form-control"
+              id="pswd"
+              type="password"
+              placeholder="Enter your last name..."
+              data-sb-validations="required"
+            />
+            <label for="pswd">Password</label>
+            <div class="invalid-feedback" data-sb-feedback="name:required">
+              A name is required.
+            </div>
+          </div>
+          <!--Password Confirmation-->
+          <div class="form-floating mb-3">
+            <input
+              class="form-control"
+              id="pswd_confirmation"
+              type="password"
+              placeholder="Enter your last name..."
+              data-sb-validations="required"
+            />
+            <label for="pswd_confirmation">Password Confirmation</label>
+            <div class="invalid-feedback" data-sb-feedback="name:required">
+              A name is required.
+            </div>
+          </div>
+          <!-- Submit success message-->
+          <!---->
+          <!-- This is what your users will see when the form-->
+          <!-- has successfully submitted-->
+          <div class="d-none" id="submitSuccessMessage">
+            <div class="text-center mb-3">
+              <div class="fw-bolder">Form submission successful!</div>
+              To activate this form, sign up at
+              <br />
+              <a href="https://startbootstrap.com/solution/contact-forms"
+                >https://startbootstrap.com/solution/contact-forms</a
+              >
+            </div>
+          </div>
+          <!-- Submit error message-->
+          <!---->
+          <!-- This is what your users will see when there is-->
+          <!-- an error submitting the form-->
+          <div class="d-none" id="submitErrorMessage">
+            <div class="text-center text-danger mb-3">
+              Error sending message!
+            </div>
+          </div>
+          <!-- Submit Button-->
+          <div class="d-grid">
+            <button
+              class="btn btn-primary btn-lg disabled"
+              id="submitButton"
+              type="submit"
+            >
+              Signup
+            </button>
+          </div>
+          <p>Already have an account? <a href="{% url "login" %}">Login</a></p>
+        </form>
+      </div>
+    </div>
   </div>
-
-
+</div>
 {% endblock %}
