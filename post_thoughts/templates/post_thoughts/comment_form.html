@@ -2,9 +2,13 @@
 <form method="POST" enctype="multipart/form-data">
   <!-- Security token -->
   {% csrf_token %}
-  <h1>Type your Comment!</h1>
+  <br />
+  <!--Adding comment integration-->
+  <h1 class="fw-bolder text-center">Comments</h1>
+  <ul class="list-group">
+    <li class="list-group-item">{{ form.as_p }}</li>
+  </ul>
   <!-- Using the formset -->
-  {{ form.as_p }}
 
   <input type="submit" value="OK" class="btn btn-success" />
 </form>

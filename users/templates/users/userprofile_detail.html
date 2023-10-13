@@ -1,28 +1,45 @@
-
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>Welcome, {{ fname }}</h1>
-    <div>
-        <h2>User Details:</h2>
-        <p><strong>ID:</strong> {{ object.id }}</p>
+{% extends "users/base.html" %}{% block content %}
+ <!--Detail here-->
+ <br><br>
+ <div class="col mb-5 mb-5 mb-sm-0">
+    <div class="text-center">
+      <img
+        class="img-fluid rounded-circle mb-4 px-4"
+        src="{{ object.profile_picture.url }}"
+        alt="..."
+        style = "width:100px;height:100px;"
+      />
+      <h5 class="fw-bolder">ID:{{object.id}}</h5>
         <p><strong>Name:</strong> {{ object.user }}</p>
         <p><strong>Bio:</strong> {{ object.bio }}</p>
         <p><strong>City:</strong> {{ object.city }}</p>
         <p><strong>Date of Birth:</strong>{{object.date_of_birth}}</p>
-
-        
-        <a href="{% url 'ListProfile' %}" class="btn btn-primary">Go to Profile</a>
-
+        <p><a href="{% url 'ListProfile' %}" class="btn btn-primary">Go to Profile</a></p>
+      <div class="fst-italic text-muted">.....</div>
     </div>
-  
-</body>
-</html>
+    <div class="row container col-6">
+    <a href="{% url "UpdateProfile" user.id %}"
+      ><button
+        type="submit"
+        name="submit"
+        id="submit"
+        class="btn btn-outline-primary"
+      />Update</button></a
+      ><br><br>
+      <div class="col-6">
+      <a href="{% url "DeleteProfile" user.id %}"
+      ><button
+        type="submit"
+        name="submit"
+        id="submit"
+        class="btn btn-outline-danger"
+      />Delete</button></a
+      >
+  </div>
+</div>
 
+  </div>
+  </div>
+{% endblock %}
 
 

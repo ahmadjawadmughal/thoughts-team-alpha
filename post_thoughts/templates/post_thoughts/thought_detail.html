@@ -1,45 +1,40 @@
-{% extends "post_thoughts/base.html" %} {% block content %}
-<h2>Thought Template</h2>
-<button
-  type="button"
-  class="btn btn-primary"
-  data-bs-toggle="modal"
-  data-bs-target="#example-modal"
->
-  View Thought
-</button>
-<div
-  class="modal"
-  id="example-modal"
-  tabindex="-1"
-  aria-labelledby="example-modal-label"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="example-modal-label">Details</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        Title: {{object.title}} <br>        
-        Thought: {{object.thought}} <br>
-        Shared with: {{object.shared_with}} <br>
-        <img src="{{object.image.url}}" style="width:300px;height:200px"/>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-      </div>
+{% extends "post_thoughts/base.html" %} {% block content %}
+  <!--Detail here-->
+  <br><br>
+  <div class="col mb-5 mb-5 mb-sm-0">
+    <div class="text-center">
+      
+      <h5 class="fw-bolder">{{object.title}}</h5>
+      <p><strong>Title:</strong> {{object.title}}</p>        
+      <p><strong>Thought:</strong> {{object.thought}}</p>
+      <p><strong>Shared with:</strong> {{object.shared_with}}</p>
+      {% comment %}
+       <img src="{{object.image.url}}" style="width:80px;height:80px"/></p>
+       {% endcomment %}
+      <div class="fst-italic text-muted">.....</div>
     </div>
+    <div class="row container col-6">
+    <a href="{% url "UpdateThought" object.id %}"
+      ><button
+        type="submit"
+        name="submit"
+        id="submit"
+        class="btn btn-outline-primary"
+      />Update Thoughts</button></a
+      ><br><br>
+      <div class="col-6">
+      <a href="{% url "DeleteThoughts" object.id %}"
+      ><button
+        type="submit"
+        name="submit"
+        id="submit"
+        class="btn btn-outline-danger"
+      />Delete Thoughts</button></a
+      >
   </div>
 </div>
 
+  </div>
+  </div>
 {% endblock %}
