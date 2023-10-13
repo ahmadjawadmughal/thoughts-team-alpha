@@ -8,7 +8,8 @@ class Thought(models.Model):
     thought = models.TextField(null=True)
     image = models.ImageField(upload_to="images", height_field=None, width_field=None, max_length=None,blank=True,null=True)
     shared_with = models.ManyToManyField(User,related_name="thoughts")
-
+    is_private = models.BooleanField(default=False)
+    
     def __str__(self):
         return self.title
     

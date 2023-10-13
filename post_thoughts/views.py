@@ -39,7 +39,6 @@ class CreateThoughts(LoginRequiredMixin, CreateView):
 
 
 
-
 class UpdateThought(LoginRequiredMixin, UpdateView):
     model = Thought
     fields = "__all__"
@@ -139,7 +138,6 @@ class DetailComment(DetailView):
                 
 
 class SuccessComment(TemplateView):
-
     template_name = "post_thoughts/comment_list.html/"
 
 
