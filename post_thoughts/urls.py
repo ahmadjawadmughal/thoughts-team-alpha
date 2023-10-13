@@ -16,6 +16,9 @@ urlpatterns = [
     path("SuccessComment/",SuccessComment.as_view(),name="SuccessComment"),
     # home page
     path("home/", Home.as_view(), name="Home"),
+    # about page
+    path("about/", About.as_view(), name="About"),
+
 
 
 ]

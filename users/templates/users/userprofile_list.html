@@ -1,12 +1,13 @@
 {% extends "users/base.html" %} {% block content %}
-
+ 
 <div class="container mt-5">
   <h2>Welcome to the User Profiles! </h2>
   <p>Lets connect with the people.</p>
 
   <!-- Add your blog posts and content here -->
-  <div>
     <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-4">
       <h2>Latest Blog Posts</h2>
 
       {% for object in object_list %}
@@ -18,11 +19,12 @@
         />
         <div class="card-body">
           <h5 class="card-title">{{object.user}}</h5>
+          
 
           <a href="{% url 'DetailProfile' object.pk %}" class="btn btn-primary">See Profile Details</a>
         </div>
       </div>
-     
+        </div>
       {% endfor %}
       <!-- Add more blog posts as needed -->
   </div>

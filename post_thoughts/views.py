@@ -12,7 +12,10 @@ from post_thoughts.models import *
 class Home(TemplateView):
     template_name = "post_thoughts/home.html"
 
+# about page
 
+class About(TemplateView):
+    template_name = "post_thoughts/about.html"
 
 class ChangePass(LoginRequiredMixin, UpdateView):
     model = Thought

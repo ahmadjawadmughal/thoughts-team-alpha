@@ -1,42 +1,33 @@
 {% extends "post_thoughts/base.html" %} {% block content %}
-
+<!--Cards-->
+<br /><br />
+<!---->
 <div class="container mt-5">
-  <h2>Welcome to the Thoughts!</h2>
-  <p>Please share the thoughts with us.</p>
-  <!-- Add your blog posts and content here -->
-  <div>
-    <div class="container mt-5">
-      <h2>Latest Blog Posts</h2>
-      {% for object in object_list %}
-      <div class="card" style="width: 18rem; margin: 5px">
-        <img
-          src="{% if object.image %}{{ object.image.url }}{% endif %}"
-          class="card-img-top"
-          alt="..."
-        />
+  <div class="row">
+    {% for object in object_list %}
+    <div class="col-md-4">
+      <div class="card" style="width: 18rem">
+        {% if object.image %}
+        <img src="{{object.image.url}}" class="card-img-top" alt="..." />
+        {% else %}
+        <p>No img</p>
+        {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{object.title}}</h5>
-          <p class="card-text">{{object.thought}}</p>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </p>
 
-          <a href="{% url 'DetailThoughts' object.id %}" class="btn btn-primary">Go</a>
+          <a href="{% url 'DetailThoughts' object.id %}" class="btn btn-primary"
+            >Go somewhere</a
+          >
         </div>
       </div>
-      {% endfor %}
-      <!-- Add more blog posts as needed -->
     </div>
+    {% endfor %}
   </div>
 </div>
-<!--<div class="modal-body">
-       
-        
-        
 
-        <br /><br />
-        <input type="submit" value="submit" />
-      </div>
-      
-    </div>
-  </div>
-</div>-->
-
+<br /><br />
 {% endblock %}
