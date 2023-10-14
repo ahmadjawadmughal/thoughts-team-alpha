@@ -97,7 +97,7 @@ class Profile(LoginRequiredMixin, CreateView):
     model = UserProfile
     fields = "__all__"
     #fields = ['bio', 'city', 'date_of_birth', 'profile_picture']
-    success_url = 'DetailProfile/{pk}'
+    #success_url = 'DetailProfile/{pk}'
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])
 
