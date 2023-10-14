@@ -20,13 +20,14 @@
         <!-- To make this form functional, sign up at-->
         <!-- https://startbootstrap.com/solution/contact-forms-->
         <!-- to get an API token!-->
-        <form action="{% url "signup" %}" method="POST" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
+        <form action="{% url "signup" %}" method="post" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
            {% csrf_token %}
             <!--Username-->
             <div class="form-floating mb-3">
                 <input
                   class="form-control"
                   id="username"
+                  name = "username"
                   type="text"
                   placeholder="Enter your name..."
                   data-sb-validations="required"
@@ -42,6 +43,7 @@
             <input
               class="form-control"
               id="first_name"
+              name = "first_name"
               type="text"
               placeholder="Enter your first name..."
               data-sb-validations="required"
@@ -56,6 +58,7 @@
             <input
               class="form-control"
               id="last_name"
+              name = "last_name"
               type="text"
               placeholder="Enter your last name..."
               data-sb-validations="required"
@@ -70,6 +73,7 @@
             <input
               class="form-control"
               id="email"
+              name = "email"
               type="email"
               placeholder="name@example.com"
               data-sb-validations="required,email"
@@ -87,6 +91,7 @@
             <input
               class="form-control"
               id="pswd"
+              name = "pswd"
               type="password"
               placeholder="Enter your last name..."
               data-sb-validations="required"
@@ -101,6 +106,7 @@
             <input
               class="form-control"
               id="pswd_confirmation"
+              name = "pswd_confirmation"
               type="password"
               placeholder="Enter your last name..."
               data-sb-validations="required"
@@ -134,14 +140,7 @@
             </div>
           </div>
           <!-- Submit Button-->
-          <div class="d-grid">
-            <button
-              class="btn btn-primary btn-lg disabled"
-              id="submitButton"
-              type="submit"
-            >
-              Signup
-            </button>
+          <input type="submit" value="Signup" class="btn btn-outline-primary" />
           </div>
           <p>Already have an account? <a href="{% url "login" %}">Login</a></p>
         </form>

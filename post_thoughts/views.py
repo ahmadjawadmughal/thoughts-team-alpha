@@ -48,6 +48,7 @@ class UpdateThought(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('DetailThoughts', args=[self.object.user.pk])  
+    
     login_url = reverse_lazy('login')
 
 
@@ -65,6 +66,19 @@ class DeleteThoughts(LoginRequiredMixin, DeleteView):
         return self.model.objects.get(pk=self.kwargs['pk'])
 
 
+#getting thoughts of loggedin user
+class My_thoughts(LoginRequiredMixin, ListView):
+    model = Thought
+    template_name = "post_thoughts/thought_list.html"
+    login_url = reverse_lazy('login')
+
+    # to associate thoughts with users.
+    def get_queryset(self):  #a queryset of all thoughts will come not single object
+        return self.model.objects.filter(user=self.request.user)
+
+
+
+#all thoughts of users
 class ListThoughts(ListView):
     model = Thought
     template_name = "post_thoughts/thought_list.html"
@@ -103,17 +117,15 @@ class CreateComment(LoginRequiredMixin, CreateView):
 class UpdateComment(LoginRequiredMixin, UpdateView):
     model = Comment
     fields = "__all__"
-    """
-    success_url = reverse_lazy("ListComment")
-    """
+
     def get_success_url(self):
         # Assuming you want to redirect to the user_profile view with a specific primary key
         return reverse('DetailComment', args=[self.object.user.pk])
-    """
+    
     def get_object(self, queryset=None):
     # Retrieve the object to be deleted using the 'pk' from the URL
         return self.model.objects.get(pk=self.kwargs['pk'])
-"""
+
     login_url = reverse_lazy('login')         
 
 

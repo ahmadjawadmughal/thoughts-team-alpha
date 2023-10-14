@@ -96,10 +96,15 @@ def user_logout(request):
 class Profile(LoginRequiredMixin, CreateView):
     model = UserProfile
     fields = "__all__"
-
+    #fields = ['bio', 'city', 'date_of_birth', 'profile_picture']
+    success_url = 'DetailProfile/{pk}'
     def get_success_url(self):
-        return reverse('DetailProfile', args=[self.object.user.pk])    
+        return reverse('DetailProfile', args=[self.object.user.pk])
+
+
     
+
+"""
     def form_valid(self, form):
         already_profile = UserProfile.objects.filter(user=self.request.user).first()
         if already_profile:
@@ -108,7 +113,7 @@ class Profile(LoginRequiredMixin, CreateView):
         else:    
             form.instance.user = self.request.user  # Assigned the user to the profile
             return super().form_valid(form)
-
+"""
 
 class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
@@ -117,7 +122,7 @@ class UpdateProfile(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
 
     def get_success_url(self):
-        return reverse('DetailProfile', args=[self.object.user.pk])
+        return reverse('DetailProfile', args=[self.object.pk])
     
     def get_object(self, queryset=None):
         return UserProfile.objects.get(user=self.request.user)  # get the existing profile for the current user
@@ -126,14 +131,16 @@ class UpdateProfile(LoginRequiredMixin, UpdateView):
         if not UserProfile.objects.filter(user=request.user).exists():  # Check if the user has a profile
             return redirect('Profile')  # If no profile exists, redirect to create profile
         return super().dispatch(request, *args, **kwargs)
-
+    
 
 
 class DeleteProfile(LoginRequiredMixin, DeleteView):
     model = UserProfile
     fields = "__all__"
-    #success_url = "/users/ListProfile/"
     login_url = reverse_lazy('login')   
+
+    def get_object(self, queryset=None):
+        return UserProfile.objects.get(user=self.request.user)  # get the existing profile for the current user
 
     def post(self, request, *args, **kwargs):
         if 'confirm' in request.POST:
@@ -146,20 +153,32 @@ class DeleteProfile(LoginRequiredMixin, DeleteView):
 
 
 
+#loggind user profile detail
+class myProfile_detail(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'users/userprofile_detail.html'
 
+    def get_object(self, queryset=None):
+        return UserProfile.objects.get(user=self.request.user) 
+    
+    login_url = reverse_lazy('login')
+
+
+#all users list
 class ListProfile(ListView):
     model = UserProfile
-    success_urls = "/users/Success/"
-
-
-class DetailProfile(DetailView):
+    #template_name='users/userprofile_list.html'
+  
+#all users detils view
+class DetailProfile(LoginRequiredMixin, DetailView):
     model = UserProfile
-    
+    """
     def get_success_url(self):
         return reverse('DetailProfile', args=[self.object.user.pk])
+    """
     
-    #template_name = '/users/user_profile_detail.html/'
-    #success_url = "/users/Success/"            
+    login_url = reverse_lazy('login')
+        
 
 
 

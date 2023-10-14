@@ -20,7 +20,7 @@
         <!-- To make this form functional, sign up at-->
         <!-- https://startbootstrap.com/solution/contact-forms-->
         <!-- to get an API token!-->
-        <form action="{% url "login" %}" method="POST" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
+        <form action="{% url "login" %}" method="post" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
             {% csrf_token %} 
           <!--Username-->
 
@@ -28,6 +28,7 @@
                 <input
                   class="form-control"
                   id="username"
+                  name = "username"
                   type="text"
                   placeholder="Enter your name..."
                   data-sb-validations="required"
@@ -44,6 +45,7 @@
             <input
               class="form-control"
               id="pswd"
+              name = "pswd"
               type="password"
               placeholder="Enter your last name..."
               data-sb-validations="required"
@@ -79,13 +81,7 @@
           </div>
           <!-- Submit Button-->
           <div class="d-grid">
-            <button
-              class="btn btn-primary btn-lg disabled"
-              id="submitButton"
-              type="submit"
-            >
-              Login
-            </button>
+            <input type="submit" value="Login" class="btn btn-outline-primary" />
           </div>
           <p>If you don't have an account? <a href="{% url "signup" %}">Signup</a></p>
         </form>
