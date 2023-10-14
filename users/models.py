@@ -17,7 +17,7 @@ class User(AbstractUser):
     EMAIL_FIELD = 'email'
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to="images", null=True, blank=True)
     bio = models.TextField() 
     city = models.CharField(max_length=50)
@@ -25,4 +25,5 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.bio
+    
     
