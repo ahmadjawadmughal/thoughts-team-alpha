@@ -95,25 +95,17 @@ def user_logout(request):
 
 class Profile(LoginRequiredMixin, CreateView):
     model = UserProfile
-    fields = "__all__"
-    #fields = ['bio', 'city', 'date_of_birth', 'profile_picture']
+    #fields = "__all__"
+    fields = ['bio', 'city', 'date_of_birth', 'profile_picture']
     #success_url = 'DetailProfile/{pk}'
     def get_success_url(self):
-        return reverse('DetailProfile', args=[self.object.user.pk])
-
-
+        return reverse('DetailProfile', args=[self.user.pk])
     
-
-"""
     def form_valid(self, form):
-        already_profile = UserProfile.objects.filter(user=self.request.user).first()
-        if already_profile:
-            return redirect('UpdateProfile', pk=already_profile.pk)   #we can display msg as already profile exists just update
-            #return HttpResponseForbidden("You already have a profile.")
-        else:    
-            form.instance.user = self.request.user  # Assigned the user to the profile
-            return super().form_valid(form)
-"""
+        form.instance.user = self.request.user  # Assigned the user to the profile
+        return super().form_valid(form)
+    login_url = reverse_lazy('login')
+
 
 class UpdateProfile(LoginRequiredMixin, UpdateView):
     model = UserProfile
@@ -143,7 +135,7 @@ class DeleteProfile(LoginRequiredMixin, DeleteView):
         return UserProfile.objects.get(user=self.request.user)  # get the existing profile for the current user
 
     def post(self, request, *args, **kwargs):
-        if 'confirm' in request.POST:
+        if 'Confirm' in request.POST:
             return super().delete(request, *args, **kwargs)
         else:
             return redirect ("ListProfile")  #also the deletetion cancelled
@@ -169,20 +161,17 @@ class ListProfile(ListView):
     model = UserProfile
     #template_name='users/userprofile_list.html'
   
+
 #all users detils view
 class DetailProfile(LoginRequiredMixin, DetailView):
     model = UserProfile
-    """
-    def get_success_url(self):
-        return reverse('DetailProfile', args=[self.object.user.pk])
-    """
     
     login_url = reverse_lazy('login')
         
 
 
 
-
+#testing purpos
 class Success(TemplateView):
     template_name = "users/success.html/"
 

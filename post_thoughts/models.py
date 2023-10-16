@@ -7,7 +7,8 @@ class Thought(models.Model):
     title = models.CharField(max_length=200)
     thought = models.TextField(null=True)
     image = models.ImageField(upload_to="images", height_field=None, width_field=None, max_length=None,blank=True,null=True)
-    shared_with = models.ManyToManyField(User,related_name="thoughts")
+    shared_with = models.ManyToManyField(User,related_name="share_thoughts", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     is_private = models.BooleanField(default=False)
     
     def __str__(self):
@@ -18,6 +19,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     thoughts = models.ForeignKey(Thought, on_delete=models.CASCADE)
     text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text
