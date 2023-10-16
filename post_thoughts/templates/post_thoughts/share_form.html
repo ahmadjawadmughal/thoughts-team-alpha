@@ -1,0 +1,38 @@
+{% extends "post_thoughts/base.html" %} {% block content %}
+<!--Adding thought integration-->
+<div class="container px-5">
+  <!-- Contact form-->
+  <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+    <div class="text-center mb-5">
+      <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
+        <i class="bi bi-envelope"></i>
+      </div>
+      <h1 class="fw-bolder">Share Thought</h1>
+      <p class="lead fw-normal text-muted mb-0">
+        Let's share your thought here!
+      </p>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-8 col-xl-6">
+        <form id="contactForm" data-sb-form-api-token="API_TOKEN" method="POST" enctype="multipart/form-data">
+          
+            <!--INtegration here-->
+            {% csrf_token %}
+            
+
+            <!-- Using the formset -->
+            {{ form.as_p }}
+            {% for i in all_users %} 
+            {{ i }}
+             {% endfor %}
+            <br>
+            <input type="submit" value="Save" class="btn btn-outline-primary" />
+        </div>
+          <br /><br />
+          <p>Go to your thought.<a href="{% url 'DetailThoughts' user.id %}">Go</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

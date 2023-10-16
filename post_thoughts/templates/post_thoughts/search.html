@@ -1,0 +1,61 @@
+{% extends "post_thoughts/base.html" %} {% block content %}
+<!--Cards-->
+{% comment %} {% if messages %} {% for message in messages %}
+<div
+  class="alert alert-warning alert-dismissible fade show messages"
+  role="alert"
+>
+  <strong>Message:</strong
+  ><span {% if message.tags %} class="{{ message.tags }}" {% endif %}
+    >{{ message }}</span
+  >
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% endfor %} {% endif %} {% endcomment %}
+<br /><br />
+<div class="container">
+  <h2>Search Results:</h2>
+  {% if object_list|length < 1 %}
+  <p>Oops! No search results</p>
+  <p>
+    Your search - <strong> {{ query }}</strong>- did not match any documents.
+  </p>
+
+  <ul>
+    Suggestions:
+    <li>Make sure all words are spelled correctly.</li>
+    <li>Try different keywords.</li>
+    <li>Try more general keywords.</li>
+  </ul>
+  {% endif %}
+</div>
+<!---->
+<div class="container mt-5">
+  <div class="row">
+    {% for object in object_list %}
+    <div class="col-md-4">
+      <div class="card" style="width: 18rem">
+        {% if object.image %}
+        <img src="{{object.image.url}}" class="card-img-top" alt="..." />
+        {% else %}
+        <p>No img</p>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{object.title}}</h5>
+          <p class="card-text">{{ object.thought }}</p>
+
+          <a href="{% url 'DetailThoughts' object.id %}" class="btn btn-primary"
+            >Go somewhere</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<br /><br />
+{% endblock %}
