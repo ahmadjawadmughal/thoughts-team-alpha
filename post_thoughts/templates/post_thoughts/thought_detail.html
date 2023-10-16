@@ -8,11 +8,16 @@
       <h5 class="fw-bolder">{{object.title}}</h5>
       <p><strong>Title:</strong> {{object.title}}</p>        
       <p><strong>Thought:</strong> {{object.thought}}</p>
-      <p><strong>Shared with:</strong> {{object.shared_with}}</p>
+      <p><strong>Shared with:</strong>
+        {% for shared_obj in object.shared_with.all %}
+          {{ shared_obj }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      
       {% comment %}
        <img src="{{object.image.url}}" style="width:80px;height:80px"/></p>
        {% endcomment %}
-      <div class="fst-italic text-muted">.....</div>
+      <div class="fst-italic text-muted"></div>
     </div>
     <div class="row container col-6">
     <a href="{% url "UpdateThought" object.id %}"

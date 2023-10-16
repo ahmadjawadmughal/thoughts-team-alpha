@@ -8,9 +8,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 from post_thoughts.models import *
-from .forms import Thought_ShareForm
-
-
 
 
 
@@ -21,9 +18,12 @@ class Home(TemplateView):
 
 # about page
 
-class About(TemplateView):
+
+class About(LoginRequiredMixin,TemplateView):
+    login_url = "/users/login/"
     template_name = "post_thoughts/about.html"
 
+# change password
 class ChangePass(LoginRequiredMixin, UpdateView):
     model = Thought
     fields = ["password"]
@@ -77,22 +77,7 @@ class DeleteThoughts(LoginRequiredMixin, DeleteView):
         return self.model.objects.get(pk=self.kwargs['pk'])
 
 
-#getting thoughts of loggedin user
-class My_thoughts(LoginRequiredMixin, ListView):
-    model = Thought
-    template_name = "post_thoughts/thought_list.html"
-    login_url = reverse_lazy('login')
 
-    # to associate thoughts with users.
-    def get_queryset(self):  #a queryset of all thoughts will come not single object
-        return self.model.objects.filter(user=self.request.user)
-
-
-
-#all thoughts of users
-class ListThoughts(ListView):
-    model = Thought
-    template_name = "post_thoughts/thought_list.html"
 
 
 
@@ -164,8 +149,9 @@ class DeleteComment(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
    
 
-class ListComment(ListView):
+class ListComment(LoginRequiredMixin,ListView):
      model = Comment
+     login_url = "/users/login/"
      template_name = "post_thoughts/comment_list.html"
      success_url = "/thoughts/SuccessComment/"
 
@@ -214,3 +200,21 @@ def share_form(request):
     return render(request, 'share_form.html/', {"form": form})
 
 
+# search bar functionality
+
+def search(request):
+    query = request.GET["query"] # "query" is the name property of the <input> tag
+    if len(query) > 60:
+        object_list = Thought.objects.none() # empty queryset
+    else:
+
+        object_listTitle = Thought.objects.filter(title__icontains=query)
+        object_listThought = Thought.objects.filter(thought__icontains=query)
+        object_list = object_listTitle.union(object_listThought) # AUB
+   # if object_list.count() == 0:
+   #     messages.warning(request,"No search results found. Please enter correct query.")    
+    context = {
+        "object_list" : object_list,
+        "query" : query
+    }
+    return render(request,"post_thoughts/search.html",context)

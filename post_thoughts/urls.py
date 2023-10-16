@@ -24,11 +24,6 @@ urlpatterns = [
     path("home/", Home.as_view(), name="Home"),
     # about page
     path("about/", About.as_view(), name="About"),
-    #allthoughts of current user
-    path("mythoughts/", My_thoughts.as_view(), name="MyThoughts"),
-    #share tweet form
-    path('share_thought/', share_form, name='sharethought')
-
 
 
 ]

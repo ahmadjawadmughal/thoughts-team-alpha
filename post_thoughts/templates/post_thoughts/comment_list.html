@@ -4,10 +4,12 @@
   <h2>Welcome to the Comments!</h2>
   <p>Lets give the comment on users thoughts.</p>
   <!-- Add your blog posts and content here -->
-  <div>
+  
     <div class="container mt-5">
+      <div class="row">
       <h2>Latest Comments on thoughts</h2>
       {% for object in object_list %}
+      <div class="col-md-4">
       <div class="card" style="width: 18rem; margin: 5px">
         <!--<img
           src="{% if object.image %}{{ object.image.url }}{% endif %}"
@@ -17,8 +19,9 @@
         <div class="card-body">
           <h5 class="card-title">{{object.user}}</h5>
           <p class="card-text">{{object.text}}</p>
-          <a href="#" class="btn btn-primary">Go</a>
+          <a href="{% url "DetailComment" object.id %}" class="btn btn-primary">Go</a>
         </div>
+      </div>
       </div>
       {% endfor %}
       <!-- Add more blog posts as needed -->

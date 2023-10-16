@@ -156,11 +156,7 @@ class myProfile_detail(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('login')
 
 
-#all users list
-class ListProfile(ListView):
-    model = UserProfile
-    #template_name='users/userprofile_list.html'
-  
+
 
 #all users detils view
 class DetailProfile(LoginRequiredMixin, DetailView):
@@ -174,6 +170,7 @@ class DetailProfile(LoginRequiredMixin, DetailView):
 #testing purpos
 class Success(TemplateView):
     template_name = "users/success.html/"
+
 
 
 

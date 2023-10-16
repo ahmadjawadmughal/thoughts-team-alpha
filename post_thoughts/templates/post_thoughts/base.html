@@ -30,13 +30,21 @@
         color: white;
         padding: 20px 0;
       }
+      .search {
+        text-decoration: none;
+        color: rgba(110, 105, 105, 0.753);
+
+      }
+      .search:hover {
+        color: #ffffff;
+      }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#"
-          ><img src="{% static "image/logo.PNG" %}" alt="" style="width: 80px;
+          ><img src="{% static "image/logo.jpg" %}" alt="" style="width: 80px;
           height: 80px" /></a
         >
         <button
@@ -203,20 +211,28 @@
             </li>
 
           </ul>
-          <form class="d-flex" role="search">
-            <input
+          <form method="get" action="/search" class="d-flex" role="search">
+            <input 
+              name = "query"
+              id = "query"
               class="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
             />
-            <button class="btn btn-outline-success" type="submit">
+            <button class="btn btn-outline-secondary" type="submit">
               Search
             </button>
-            <button class="btn btn-outline-success" type="submit">
-              <a href="{% url "signup" %}"> Signup</a>
-            </button>
           </form>
+            &nbsp;
+            <button class="btn btn-outline-secondary" type="submit">
+              <a class="search" href="{% url "signup" %}"> Signup</a>
+            </button>
+            &nbsp;
+            <button class="btn btn-outline-secondary" type="submit">
+              <a class="search" href="{% url "logout" %}">Logout</a>
+            </button>
+          
         </div>
       </div>
     </nav>
