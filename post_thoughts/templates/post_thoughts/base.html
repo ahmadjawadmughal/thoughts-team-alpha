@@ -84,29 +84,31 @@
               <ul class="dropdown-menu">
                 <li>
                   <a class="dropdown-item" href="{% url "ListThoughts" %}"
-                    >All-Thoughts</a
+                    >All Thoughts</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "CreateThoughts" %}"
-                    >Create-Thoughts</a
+                    >Create Thoughts</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "UpdateThought" user.id %}"
-                    >Update-Thoughts</a
+                    >Update Thoughts</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "DeleteThoughts" user.id %}"
-                    >Delete-Thoughts</a
+                    >Delete Thoughts</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "DetailThoughts" user.id %}"
-                    >Detail-Thoughts</a
+                    >Detail Thoughts</a
                   >
                 </li>
+              
+
               </ul>
             </li>
 
@@ -126,36 +128,47 @@
                   <a
                     class="dropdown-item"
                     href="{% url "ListProfile" %}"
-                    >List-Profile</a
+                    >List Profile</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "Profile" %}"
-                    >Create-Profile</a
+                    >Create Profile</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "UpdateProfile" user.id %}"
-                    >Update-Profile</a
+                    >Update Profile</a
                   >
                 </li>
                 <li>
                   <a
                     class="dropdown-item"
                     href="{% url "DeleteProfile" user.id %}"
-                    >Delete-Profile</a
+                    >Delete Profile</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "DetailProfile" user.id %}"
-                    >Detail-Profile</a
+                    >Detail Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "sharethought" %}"
+                    >Share Thought</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url "ChangePassword" %}"
-                    >Change-Password</a
+                    >Change Password</a
                   >
                 </li>
+                <li>
+                  <a class="dropdown-item" href="{% url "logout" %}"
+                    >Logout</a
+                  >
+                </li>
+
               </ul>
             </li>
             <li class="nav-item dropdown">
@@ -175,7 +188,7 @@
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url "CreateComment" %}"
+                  <a class="dropdown-item" href="{% url "CreateComment"   %}"
                     >Create-Comment</a
                   >
                 </li>
@@ -223,7 +236,9 @@
         </div>
       </div>
     </nav>
-    {% block content %}{% endblock %}
+    {% block content %}
+    
+    {% endblock %}
     <footer class="footer mt-5">
       <div class="container text-center">
         <p>Contact Us: <a href="tel:0000-111-444">0000-111-444</a></p>
@@ -231,7 +246,7 @@
           <li>
             Email: <a href="mailto:contact@example.com">contact@example.com</a>
           </li>
-          <li>Location: 123 Street, City, Country</li>
+          <li>Location: A block Township, Lahore, Pakistan</li>
         </ul>
         <p>&copy; 2023 Thoughts</p>
       </div>
