@@ -4,7 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView,UpdateView,FormView,DeleteView
 from django.views.generic import TemplateView, ListView, DetailView
 from post_thoughts.models import *
-
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -14,9 +15,12 @@ class Home(TemplateView):
 
 # about page
 
-class About(TemplateView):
+
+class About(LoginRequiredMixin,TemplateView):
+    login_url = "/users/login/"
     template_name = "post_thoughts/about.html"
 
+# change password
 class ChangePass(LoginRequiredMixin, UpdateView):
     model = Thought
     fields = ["password"]
@@ -66,8 +70,9 @@ class DeleteThoughts(LoginRequiredMixin, DeleteView):
         return self.model.objects.get(pk=self.kwargs['pk'])
 
 
-class ListThoughts(ListView):
+class ListThoughts(LoginRequiredMixin,ListView):
     model = Thought
+    login_url = "/users/login/"
     template_name = "post_thoughts/thought_list.html"
     success_url = "/thoughts/Success/"
 
@@ -130,8 +135,9 @@ class DeleteComment(LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
    
 
-class ListComment(ListView):
+class ListComment(LoginRequiredMixin,ListView):
      model = Comment
+     login_url = "/users/login/"
      template_name = "post_thoughts/comment_list.html"
      success_url = "/thoughts/SuccessComment/"
 
@@ -146,3 +152,21 @@ class SuccessComment(TemplateView):
     template_name = "post_thoughts/comment_list.html/"
 
 
+# search bar functionality
+
+def search(request):
+    query = request.GET["query"] # "query" is the name property of the <input> tag
+    if len(query) > 60:
+        object_list = Thought.objects.none() # empty queryset
+    else:
+
+        object_listTitle = Thought.objects.filter(title__icontains=query)
+        object_listThought = Thought.objects.filter(thought__icontains=query)
+        object_list = object_listTitle.union(object_listThought) # AUB
+   # if object_list.count() == 0:
+   #     messages.warning(request,"No search results found. Please enter correct query.")    
+    context = {
+        "object_list" : object_list,
+        "query" : query
+    }
+    return render(request,"post_thoughts/search.html",context)

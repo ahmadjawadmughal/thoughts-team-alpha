@@ -17,5 +17,5 @@ urlpatterns = [
     path("DeleteProfile/<pk>",DeleteProfile.as_view(),name="DeleteProfile"),
     path("ListProfile/",ListProfile.as_view(), name="ListProfile"),
     path("DetailProfile/<pk>",DetailProfile.as_view(), name="DetailProfile"),
-
+    
 ]

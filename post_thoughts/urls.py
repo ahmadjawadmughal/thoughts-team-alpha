@@ -18,6 +18,9 @@ urlpatterns = [
     path("home/", Home.as_view(), name="Home"),
     # about page
     path("about/", About.as_view(), name="About"),
+    # search url
+    path("search/",search, name="search"),
+
 
 
 

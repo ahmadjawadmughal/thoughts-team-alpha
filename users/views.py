@@ -238,8 +238,9 @@ class DeleteProfile(LoginRequiredMixin, DeleteView):
 
 
 
-class ListProfile(ListView):
+class ListProfile(LoginRequiredMixin,ListView):
     model = UserProfile
+    login_url = "/users/login/"
     success_urls = "/users/Success/"
 
 
@@ -257,6 +258,7 @@ class DetailProfile(DetailView):
 
 class Success(TemplateView):
     template_name = "users/success.html/"
+
 
 
 
