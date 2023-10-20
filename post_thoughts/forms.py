@@ -1,8 +1,7 @@
 
-from django import forms
-from .models import Thought
-
+from django import forms 
+from post_thoughts.models import Thought
+from users.models import User
 
 class Thought_ShareForm(forms.Form):
-    username =  forms.CharField(label="username", required=True)
-    thought = forms.CharField(label="thought", required=True)
+    shared_with = forms.ModelMultipleChoiceField(queryset=User.objects.all())
