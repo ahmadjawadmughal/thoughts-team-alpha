@@ -2,44 +2,183 @@
 {% extends "post_thoughts/base.html" %} {% block content %}
   <!--Detail here-->
   <br><br>
+  <div class="col mb-5 mb-5 mb-sm-0 border rounded p-4">
+    <div class="text-center">
+        
+        <!-- User Field -->
+        <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+              {% if not object.image %}
+              <img
+              class="rounded-circle me-3"
+              src="https://dummyimage.com/100x100/ced4da/6c757d"
+              alt="No Img"
+            />
+              {% else %}
+                <img src="{{ object.image.url }}" alt="User Image" class="img-fluid rounded-square" style="width:200px;height:150px;">
+                {% endif %}
+            </div><br><br>
+            <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+                <label for="user" class="form-label">User:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="user" class="form-control" value="{{ object.user }}" readonly>
+            </div>
+        </div>
+        
+        <!-- Title Field -->
+        <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+                <label for="title" class="form-label">Title:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="title" class="form-control" value="{{ object.title }}" readonly>
+            </div>
+        </div>
+        
+        <!-- Thought Field -->
+        <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+                <label for="thought" class="form-label">Thought:</label>
+            </div>
+            <div class="col-sm-8">
+                <textarea id="thought" class="form-control" readonly>{{ object.thought }}</textarea>
+            </div>
+        </div>
+        
+        <!-- Shared With Field -->
+        <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+                <label for="sharedWith" class="form-label">Shared with:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="sharedWith" class="form-control" value="{% for shared_obj in object.shared_with.all %}{{ shared_obj }}{% if not forloop.last %}, {% endif %}{% endfor %}" readonly>
+            </div>
+        </div>
+        
+        <!-- Private Field -->
+        <div class="mb-3 row align-items-center">
+            <div class="col-sm-4">
+                <label for="isPrivate" class="form-label">Private:</label>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="isPrivate" class="form-control" value="{{ object.is_private }}" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+  {% comment %}
   <div class="col mb-5 mb-5 mb-sm-0">
     <div class="text-center">
       
-      <h5 class="fw-bolder">{{object.title}}</h5>
-      <p><strong>Title:</strong> {{object.title}}</p>        
-      <p><strong>Thought:</strong> {{object.thought}}</p>
-      <p><strong>Shared with:</strong>
+      
+      <h5 class="fw-bolder">User: {{object.user}}</h5>
+      
+      <p class="mb-2"><strong>Title:</strong> {{object.title}}</p>        
+      <p class="mb-2"><strong>Thought:</strong> {{object.thought}}</p>
+      <p class="mb-2"><strong>Shared with:</strong>
         {% for shared_obj in object.shared_with.all %}
           {{ shared_obj }}{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </p>
-      
+      <p class="mb-2"><strong>Private:</strong> {{object.is_private}}</p>
+      </div>
+      </div>
+      {% endcomment %}
+      <br><br>
+      <div class="container">
+        {% for comment in comments %}
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#comment{{ comment.pk }}" aria-expanded="false" aria-controls="comment{{ comment.pk }}">
+                 Comment by:   {{ comment.user }}
+                </button>
+            </h2>
+            <div id="comment{{ comment.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">{{ comment.text }} <div>
+                  <a href="{% url "UpdateComment" comment.id %}"
+                    ><button
+                      type="submit"
+                      name="submit"
+                      id="submit"
+                      class="btn btn-outline-primary btn-sm"
+                    />Update</button></a
+                    ><!--<br><br>-->
+                    
+                    <a href="{% url "DeleteComment" comment.id %}"
+                    ><button
+                      type="submit"
+                      name="submit"
+                      id="submit"
+                      class="btn btn-outline-danger btn-sm"
+                    />Delete</button></a
+                    >
+                </div>
+              </div>
+            </div>
+            </div>
+            
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
       {% comment %}
        <img src="{{object.image.url}}" style="width:80px;height:80px"/></p>
-       {% endcomment %}
+       
       <div class="fst-italic text-muted"></div>
     </div>
-    <div class="row container col-6">
+    {% endcomment %}
+    <br><br>
+    <div class="row container col-6 d-inline">
     <a href="{% url "UpdateThought" object.id %}"
       ><button
         type="submit"
         name="submit"
         id="submit"
-        class="btn btn-outline-primary"
-      />Update Thoughts</button></a
-      ><br><br>
-      <div class="col-6">
+        class="btn btn-outline-primary btn-sm"
+      />Update</button></a
+      ><!--<br><br>
+      <div class="col-6 d-inline">-->
       <a href="{% url "DeleteThoughts" object.id %}"
       ><button
         type="submit"
         name="submit"
         id="submit"
-        class="btn btn-outline-danger"
-      />Delete Thoughts</button></a
+        class="btn btn-outline-danger btn-sm"
+      />Delete</button></a
       >
-  </div>
+ <!-- </div>
+ <div class="col-6 d-inline">-->
+    <a href="{% url "CreateComment" thought.id %}"
+    ><button
+      type="submit"
+      name="submit"
+      id="submit"
+      class="btn btn-outline-primary btn-sm"
+    />Comment</button></a
+    >
+<!--</div><br><br>-->
+{% if object.is_private == False %}
+<!--<div class="col-6 d-inline">-->
+  <a href="{% url "ShareForm" object.id %}"
+  ><button
+    type="submit"
+    name="submit"
+    id="submit"
+    class="btn btn-outline-primary btn-sm"
+  />Share</button></a
+  >
 </div>
 
-  </div>
-  </div>
+{% endif %}
+</div>
+
 {% endblock %}
