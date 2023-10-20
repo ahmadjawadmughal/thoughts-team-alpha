@@ -8,22 +8,27 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from post_thoughts.forms import *
-#from django.views import View
-#from django.utils.decorators import method_decorator
-#from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 
-# Create your views here.
-# home page
+# Create your views here------------------------------------------------------------------------------
+
+
+# home page 
 class Home(TemplateView):
     template_name = "post_thoughts/home.html"
 
+
+
+
 # about page
-
-
 class About(LoginRequiredMixin,TemplateView):
     login_url = "/users/login/"
     template_name = "post_thoughts/about.html"
+
+
+
 
 # change password
 class ChangePass(LoginRequiredMixin, UpdateView):
@@ -31,27 +36,25 @@ class ChangePass(LoginRequiredMixin, UpdateView):
     fields = ["password"]
 
     def get_success_url(self):
-        #redirect to detailthought view with a specific primary key
-        #return reverse('DetailThoughts', args=[self.object.user.pk])
         return reverse('ListThoughts')
     
     login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect user for login page
-    
+
+
+# Thoughts CRUD Operation ------------------------------------------------------------------------------------------------
+
 
 class CreateThoughts(LoginRequiredMixin, CreateView):
     model = Thought
     fields = ["title","thought","image","is_private"]
 
+    def get_success_url(self):
+        return reverse('MyThoughts')
+    
     def form_valid(self, form):
         # Set the current user as the user of the thought
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-
-    def get_success_url(self):
-        #redirect to detailthought view with a specific primary key
-        #return reverse('DetailThoughts', args=[self.object.user.pk])
-        return reverse('ListThoughts')
     
     login_url = reverse_lazy('login')   #if user not loggedin, first this will redirect user for login page
 
@@ -60,46 +63,63 @@ class CreateThoughts(LoginRequiredMixin, CreateView):
 
 class UpdateThought(LoginRequiredMixin, UpdateView):
     model = Thought
-    fields = "__all__"
+    fields = ['title','thought','image','is_private']
 
     def get_success_url(self):
-        return reverse('DetailThoughts', args=[self.object.user.pk])  
+        return reverse('DetailThoughts', args=[self.object.pk])  
     login_url = reverse_lazy('login')
+
 
 
 
 class DeleteThoughts(LoginRequiredMixin, DeleteView):
     model = Thought
-    fields = "__all__"
     
     def get_success_url(self):
-        return reverse('DetailThoughts', args=[self.object.user.pk])
+        return reverse('ListThoughts')
     login_url = reverse_lazy('login')
 
-    def get_object(self, queryset=None):
-    # Retrieve the object to be deleted using the 'pk' from the URL
-        return self.model.objects.get(pk=self.kwargs['pk'])
+
 
 
 class ListThoughts(LoginRequiredMixin,ListView):
     model = Thought
-    login_url = "/users/login/"
+    login_url = reverse_lazy('login')
     template_name = "post_thoughts/thought_list.html"
-    success_url = "/thoughts/Success/"
+
 
 
 
 class DetailThoughts(DetailView):
     model = Thought
-    #template_name = "post_thoughts/success.html/"
-    #success_url = "/thoughts/Success/" 
-    def get_success_url(self):
-        return reverse('DetailThoughts', args=[self.object.user.pk])  
-                    
+    login_url = reverse_lazy('login')  
+    def success_url(self):
+        return reverse('DetailThoughts', args = [self.object.user.pk])
+    
     def get_object(self, queryset=None):
-    # Retrieve the object to be deleted using the 'pk' from the URL
         return self.model.objects.get(pk=self.kwargs['pk'])
-    login_url = reverse_lazy('login')       
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        thought = self.get_object()
+
+        comments = Comment.objects.filter(thoughts=thought)
+
+        context['comments'] = comments
+        return context     
+
+
+
+
+# Displaying thoughts of loggedin/current user
+class My_thoughts(LoginRequiredMixin,ListView):
+    model = Thought
+    template_name = "post_thoughts/my_thought.html"
+    login_url = reverse_lazy("login")
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+    
 
 
 
@@ -107,171 +127,127 @@ class Success(TemplateView):
     template_name = "post_thoughts/success.html/"
 
 
-# CRUD for the Comment Model
+# CRUD for the Comment Model-----------------------------------------------------------------------------------
 
 class CreateComment(LoginRequiredMixin, CreateView):
     model = Comment
-    fields = ["thoughts","text"]
-    success_url = reverse_lazy("ListComment")
+    fields = ["text"]
+    #success_url = reverse_lazy("")
     login_url = reverse_lazy('login')
+    
+    def get_success_url(self):
+        return reverse('DetailThoughts', args=[self.object.thoughts.pk])
+   
   
     def form_valid(self, form):
-      #  thought_pk = self.kwargs["thought_pk"]
-      #  thought = Thought.objects.get(pk=pk)
-      #  form.instance.thought = thought
+        thought_pk = self.kwargs["thought_pk"]  #get the thought pk from URL
+        thought = get_object_or_404(Thought, pk=thought_pk)
+        form.instance.thoughts = thought
         # Set the current user as the user of the thought
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 
+
+
 class UpdateComment(LoginRequiredMixin, UpdateView):
     model = Comment
-    fields = "__all__"
-    """
-    success_url = reverse_lazy("ListComment")
-    """
+    fields = ["text"]
+    login_url = reverse_lazy('login')
+
     def get_success_url(self):
-        # Assuming you want to redirect to the user_profile view with a specific primary key
-        return reverse('DetailComment', args=[self.object.user.pk])
-    """
-    def get_object(self, queryset=None):
-    # Retrieve the object to be deleted using the 'pk' from the URL
-        return self.model.objects.get(pk=self.kwargs['pk'])
-"""
-    login_url = reverse_lazy('login')         
+        return reverse('DetailThoughts', args=[self.object.thoughts.pk])
+         
+
 
 
 class DeleteComment(LoginRequiredMixin, DeleteView):
     model = Comment
-    fields = "__all__"
+    login_url = reverse_lazy('login')
 
     def get_success_url(self):
-        # Assuming you want to redirect to the user_profile view with a specific primary key
-        return reverse('DetailComment', args=[self.object.user.pk]) 
+        return reverse('DetailThoughts', args=[self.object.thoughts.pk])
 
-    #success_url = "/thoughts/"
-    login_url = reverse_lazy('login')
+
    
 
 class ListComment(LoginRequiredMixin,ListView):
-     model = Comment
-     login_url = "/users/login/"
-     template_name = "post_thoughts/comment_list.html"
-     success_url = "/thoughts/SuccessComment/"
+    model = Comment
+    login_url = "/users/login/"
+    template_name = "post_thoughts/comment_list.html"
+  
+
+
 
 class DetailComment(DetailView):
     model = Comment
     template_name = "post_thoughts/comment_detail.html/"
     
                 
-
 class SuccessComment(TemplateView):
-
     template_name = "post_thoughts/comment_list.html/"
 
 
-# search bar functionality
+# search bar functionality-------------------------------------------------------------------
 
+#Added Search functionality where a user inputs text, all the Thoughts that even contain some chunk of that text in thought or in the title, appear in the list.
 @login_required
 def search(request):
-    query = request.GET["query"] # "query" is the name property of the <input> tag
-    if len(query) > 60:
+    query = request.GET["query"] 
+    if len(query) > 60:  #check for length of query
         object_list = Thought.objects.none() # empty queryset
-    else:
 
+    else:
         object_listTitle = Thought.objects.filter(title__icontains=query)
         object_listThought = Thought.objects.filter(thought__icontains=query)
         object_list = object_listTitle.union(object_listThought) # AUB
-   # if object_list.count() == 0:
-   #     messages.warning(request,"No search results found. Please enter correct query.")    
+     
     context = {
         "object_list" : object_list,
         "query" : query
     }
     return render(request,"post_thoughts/search.html",context)
 
-# shared_with
 
-@csrf_exempt
+
+# View to Share thought with users-------------------------------------------------------------
 @login_required
-def share_form(request):
-    owner = request.user  # Get the currently logged-in user
-    if request.method == "POST":
-        form = Thought_ShareForm(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            username = form.cleaned_data["username"]     
-            try:
-                thought = Thought.objects.get(title=title)
+def share_form(request,thought_pk):
+    #owner = request.user  # Get the currently logged-in user
+    thought = Thought.objects.get(id=thought_pk)
 
-            except Thought.DoesNotExist:
-                return JsonResponse({"message": "Thought doesnt exist"})
-            
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                return JsonResponse({"message": "User not found."})
-            
-            all_shared_thoughts = user.share_thoughts.all()
-            
-            if thought in all_shared_thoughts:
-                return JsonResponse({"message": f"Tweet '{thought.title}' is already shared with '{user.username}'."})
-            else:
-                user.share_thoughts.add(thought)
-                return JsonResponse({"message": f"Tweet '{thought.title}' shared successfully with '{thought.title}'."})
-        else:
-            return JsonResponse({"message": "Invalid form data."}, status=400)
+    if request.method == "POST":  # 'POST' request execute means when form is submitted 
+        form = Thought_ShareForm(request.POST)
+
+        if form.is_valid():
+            shared_user = form.cleaned_data["shared_with"] 
+            thought.shared_with.add(*shared_user)   # Added the shared user to the Thought's 'shared_with' ManyToMany field
+            return redirect('DetailThoughts', thought.id ) 
+           
+        else: #if form data isnt valid show blank form
+            form = Thought_ShareForm()  
     
     else:
         form = Thought_ShareForm()
     
     return render(request, 'post_thoughts/share_form.html/', {"form": form})
-"""
 
-@method_decorator(csrf_exempt, name='dispatch')
-@method_decorator(login_required, name='dispatch')
-class ShareFormView(View):
-    template_name = 'post_thoughts/share_form.html/'
 
-    def get(self, request, *args, **kwargs):
-        form = Thought_ShareForm()
-        all_users = User.objects.all()
-        return render(request, self.template_name, {"form": form, "all_users": all_users})
 
-    def post(self, request, *args, **kwargs):
-        owner = request.user
 
-        form = Thought_ShareForm(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            username = form.cleaned_data["username"]
-
-            try:
-                thought = Thought.objects.get(title=title)
-            except Thought.DoesNotExist:
-                return JsonResponse({"message": "Thought doesn't exist"})
-
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                return JsonResponse({"message": "User not found."})
-
-            all_shared_thoughts = user.thoughts.all()
-
-            if thought in all_shared_thoughts:
-                return render(request,"post_thoughts/success.html",{"message": f"Tweet '{thought.title}' is already shared with '{user.username}'."})
-            else:
-                user.thoughts.add(thought)
-                return render(request,"post_thoughts/success.html",{"message": f"Thought '{thought.title}' shared successfully with '{thought.title}'."})
-        else:
-            return render(request,"post_thoughts/success.html",{"message": "Invalid form data."}, status=400)
-"""
-# My-thought
-
-class My_thoughts(LoginRequiredMixin,ListView):
+# Displaying Thoughts shared with request.user------------------------------------------------
+class share_with_me(LoginRequiredMixin, ListView):
     model = Thought
-    template_name = "post_thoughts/thought_list.html"
-    login_url = reverse_lazy("login")
+    template_name = "post_thoughts/shared_with_me.html"
+    context_object_name = "thoughts"
 
-    def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+    def get_queryset(self): #retrieve all thoughts shared with request.user
+        print(self.request.user)
+        all_thoughts = Thought.objects.filter(shared_with=self.request.user)
+        return all_thoughts
+
+    login_url = "/users/login/" 
+
+
+
+
