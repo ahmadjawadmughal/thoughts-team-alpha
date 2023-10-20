@@ -3,22 +3,26 @@
  <br><br>
  <div class="col mb-5 mb-5 mb-sm-0">
     <div class="text-center">
-      <img
-        class="img-fluid rounded-circle mb-4 px-4 detail"
-        src="{{ object.profile_picture.url }}"
-        alt="..."
-        style = "width:200px;height:150px;"
-      />
-      <h5 class="fw-bolder">ID:{{object.id}}</h5>
-        <p><strong>Name:</strong> {{ object.user }}</p>
-        <p><strong>Bio:</strong> {{ object.bio }}</p>
-        <p><strong>City:</strong> {{ object.city }}</p>
-        <p><strong>Date of Birth:</strong>{{object.date_of_birth}}</p>
-        <p><a href="{% url 'ListProfile' %}" class="btn btn-primary">Go to Profile</a></p>
-      <div class="fst-italic text-muted"></div>
-    </div>
+        {% if object.profile_picture %}
+        <img
+          class="img-fluid rounded-circle mb-4 px-4 detail"
+          src="{{ object.profile_picture.url }}"
+          alt="..."
+          style = "width:200px;height:150px;"
+        />
+          {% else %}
+            <p> No Image </p>
+          {% endif %}
+        <h5 class="fw-bolder">ID:{{object.id}}</h5>
+          <p><strong>Name:</strong> {{ object.user }}</p>
+          <p><strong>Bio:</strong> {{ object.bio }}</p>
+          <p><strong>City:</strong> {{ object.city }}</p>
+          <p><strong>Date of Birth:</strong>{{object.date_of_birth}}</p>
+          <p><a href="{% url 'ListProfile' %}" class="btn btn-primary">Go to Profile</a></p>
+          <div class="fst-italic text-muted"></div>
+        </div>
     <div class="row container col-6">
-    <a href="{% url "UpdateProfile" user.id %}"
+    <a href="{% url "UpdateProfile" object.id %}"
       ><button
         type="submit"
         name="submit"
@@ -27,7 +31,7 @@
       />Update</button></a
       ><br><br>
       <div class="col-6">
-      <a href="{% url "DeleteProfile" user.id %}"
+      <a href="{% url "DeleteProfile" object.id %}"
       ><button
         type="submit"
         name="submit"
@@ -41,5 +45,3 @@
   </div>
   </div>
 {% endblock %}
-
-
