@@ -1,5 +1,52 @@
 {% extends "users/base.html" %} {% block content %}
 <!--Adding Profile integration-->
+<!-- userprofile_form.html -->
+
+  <h1>Create Your Profile</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% if user.is_authenticated %}
+    {% csrf_token %}
+    
+    <!-- Bio -->
+    <div class="mb-3">
+      <label for="{{ form.bio.id_for_label }}">Bio:</label>
+      <input type="text" class="form-control" id="{{ form.bio.id_for_label }}" name="{{ form.bio.name }}" value="{{ form.bio.value }}">
+    </div>
+    
+    <!-- City -->
+    <div class="mb-3">
+      <label for="{{ form.city.id_for_label }}">City:</label>
+      <input type="text" class="form-control" id="{{ form.city.id_for_label }}" name="{{ form.city.name }}" value="{{ form.city.value }}">
+    </div>
+    
+    <!-- Date of Birth -->
+    <div class="mb-3">
+      <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth:</label>
+      <input type="date" class="form-control" id="{{ form.date_of_birth.id_for_label }}" name="{{ form.date_of_birth.name }}" value="{{ form.date_of_birth.value }}">
+    </div>
+    
+    <!-- Profile Picture -->
+    <div class="mb-3">
+      <label for="{{ form.profile_picture.id_for_label }}">Profile Picture:</label>
+      <input type="file" class="form-control" id="{{ form.profile_picture.id_for_label }}" name="{{ form.profile_picture.name }}">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
 <div class="container px-5">
   <!-- Contact form-->
   <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
@@ -15,17 +62,39 @@
     <div class="row gx-5 justify-content-center">
       <div class="col-lg-8 col-xl-6">
         <form method="POST" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
-          
+          {% if user.is_authenticated %}
             <!--INtegration here-->
             {% csrf_token %}
-
+         
+        <div class="mb-3">
+          <label for="{{ form.bio.id_for_label }}">Bio:</label>
+          <input type="text" class="form-control" id="{{ form.bio.id_for_label }}" name="{{ form.bio.name }}" value="{{ form.bio.value }}">
+      </div>
+        <div class="mb-3">
+          <label for="{{ form.city.id_for_label }}">City:</label>
+          <input type="text" class="form-control" id="{{ form.city.id_for_label }}" name="{{ form.city.name }}" value="{{ form.city.value }}">
+        </div>
+    
             <!-- Using the formset -->
-            {{ form.as_p }}
+            
+            <!-- Using the formset -->
+        <div class="mb-3">
+            <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth:</label>
+            <input type="date" class="form-control" id="{{ form.date_of_birth.id_for_label }}" name="{{ form.date_of_birth.name }}" value="{{ form.date_of_birth.value }}">
+        </div>
+        <div class="mb-3">
+          <label for="{{ form.profile_picture.id_for_label }}">Profile Picture:</label>
+          <input type="file" class="form-control" id="{{ form.profile_picture.id_for_label }}" name="{{ form.profile_picture.name }}">
+        </div>
+
+
             <br>
             <input src="{% url "DetailProfile" user.id %}" type="submit" value="Submit" class="btn btn-outline-primary" />
         </div>
+        {% endcomment %}
           <br /><br />
           <p>Go to your profile.<a href="{% url "DetailProfile" user.id %}">Go</a></p>
+          {% endif %}
         </form>
       </div>
     </div>
