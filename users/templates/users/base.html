@@ -38,14 +38,10 @@
       .search:hover {
         color: #ffffff;
       }
-    
-      img.detail {
-          object-fit: cover;
-          border-radius: 50px;
-      }
     </style>
   </head>
   <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#"
@@ -68,10 +64,14 @@
             class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
             style="--bs-scroll-height: 100px"
           >
+
+            {% if request.user.is_authenticated %}
+
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{% url "Home" %}"
-                >Home</a
-              >
+                >Home</a>
+            {% endif %}
+
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url "About" %}">About</a>
@@ -93,20 +93,17 @@
                   >
                 </li>
                 <li>
+                  <a class="dropdown-item" href="{% url "MyThoughts" %}"
+                    >My-Thoughts</a
+                  >
+                </li>
+                <li>
                   <a class="dropdown-item" href="{% url "CreateThoughts" %}"
                     >Create-Thoughts</a
                   >
                 </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "UpdateThought" user.id %}"
-                    >Update-Thoughts</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "DeleteThoughts" user.id %}"
-                    >Delete-Thoughts</a
-                  >
-                </li>
+                
+
               </ul>
             </li>
 
@@ -130,27 +127,11 @@
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url "myProfile_detail" user.id %}"
-                    >My-Profile</a
-                  >
-                </li>
-                <li>
                   <a class="dropdown-item" href="{% url "Profile" %}"
                     >Create-Profile</a
                   >
                 </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "UpdateProfile" user.id %}"
-                    >Update-Profile</a
-                  >
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="{% url "DeleteProfile" user.id %}"
-                    >Delete-Profile</a
-                  >
-                </li>
+                
                 <li>
                   <a class="dropdown-item" href="{% url "ChangePassword" %}"
                     >Change-Password</a
@@ -158,45 +139,18 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Comments
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="{% url "ListComment" %}"
-                    >All-Comments</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "CreateComment" %}"
-                    >Create-Comment</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "UpdateComment" user.id %}"
-                    >Update-Comment</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url "DeleteComment" user.id %}"
-                    >Delete-Comment</a
-                  >
-                </li>
-              </ul>
+            
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "Shared_With_Me" %}">Thoughts Shared with Me</a>
+              </li>  
+              
             </li>
 
           </ul>
           <form method="get" action="/search" class="d-flex" role="search">
-            <input
-              name="query"
-              id="query"
+            <input 
+              name = "query"
+              id = "query"
               class="form-control me-2"
               type="search"
               placeholder="Search"
@@ -206,14 +160,25 @@
               Search
             </button>
           </form>
-          &nbsp;
+            &nbsp;
+            {% if not request.user.is_authenticated %}
             <button class="btn btn-outline-secondary" type="submit">
               <a class="search" href="{% url "signup" %}"> Signup</a>
             </button>
+          {% endif %}
+
+            {% if request.user.is_authenticated %}
             &nbsp;
             <button class="btn btn-outline-secondary" type="submit">
               <a class="search" href="{% url "logout" %}">Logout</a>
             </button>
+            {% else %}
+            &nbsp;
+            <button class="btn btn-outline-secondary" type="submit">
+              <a class="search" href="{% url "login" %}">Login</a>
+            </button>
+
+          {% endif %}
           
         </div>
       </div>
