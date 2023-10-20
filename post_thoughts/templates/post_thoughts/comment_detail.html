@@ -2,9 +2,9 @@
 <br><br>
   <div class="col mb-5 mb-5 mb-sm-0">
     <div class="text-center">
-      <h5 class="fw-bolder">{{object.user}}</h5>
+      <h5 class="fw-bolder"><strong>User:</strong>{{object.user}}</h5>
       <p><strong>Comment Text:</strong> {{object.text}}</p>        
-      <p><strong>Thought:</strong> {{object.thoughts}}</p>
+      <p><strong>Thought:</strong> {{object.thought}}</p>
       {% comment %}
        <img src="{{object.image.url}}" style="width:80px;height:80px"/></p>
        {% endcomment %}
@@ -65,7 +65,9 @@
       <div class="modal-body">
         <h2>Details of Comment</h2>
         <ul style="list-style-type: number; font-size: x-large">
-            <li>User: {{ object.text }}</br> Username: {{ object.user }}</li>
+            <li> User: {{ object.text }}</br> 
+              Username: {{ object.user }}
+            </li>
           </ul>
         
       </div>
