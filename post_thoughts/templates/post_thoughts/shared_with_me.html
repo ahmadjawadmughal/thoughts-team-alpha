@@ -1,0 +1,34 @@
+{% extends "post_thoughts/base.html" %} {% block content %}
+<h1>Thoughts Shared with Me</h1>
+{% if user.is_authenticated %}
+<div class="container mt-5">
+  <div class="row">
+    {% for thought in thoughts %}
+    <div class="col-md-4">
+      <div class="card" style="width: 18rem">
+        {% if thought.image %}
+        <img src="{{thought.image.url}}" class="card-img-top" alt="..." />
+        {% else %}
+        <p>No img</p>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{thought.title}}</h5>
+          <p class="card-text">{{thought.thought}}</p>
+
+          <a
+            href="{% url 'DetailThoughts' thought.id %}"
+            class="btn btn-primary"
+            >See Detail
+          </a>
+        </div>
+      </div>
+      <br />
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+{% endif %}
+<br />
+{% endblock content %}
